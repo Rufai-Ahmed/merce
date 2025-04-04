@@ -1,3 +1,4 @@
+'use client';
 import AnimatedCounter from "@/components/ui/AnimatedCounter";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
@@ -6,8 +7,14 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import * as motion from "framer-motion/client";
+import { useGetProductsQuery } from "@/apis/product.api";
+import { useGetOrdersQuery } from "@/apis/order.api";
 
 const Header = () => {
+  const { data } = useGetProductsQuery({});
+  const {data: orders} = useGetOrdersQuery();
+  console.debug({ data, orders });
+
   return (
     <header className="bg-[#F2F0F1] pt-10 md:pt-24 overflow-hidden">
       <div className="md:max-w-frame mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
