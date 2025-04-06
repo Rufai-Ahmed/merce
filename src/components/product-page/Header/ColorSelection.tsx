@@ -42,7 +42,7 @@ const ColorSelection = ({ colors }: { colors: string[] }) => {
               )
             }
           >
-            {colorSelection.name === color && (
+            {colorSelection?.name === color && (
               <IoMdCheckmark className="text-base text-white" />
             )}
           </button>

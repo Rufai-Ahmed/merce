@@ -6,7 +6,7 @@ module.exports = {
   siteUrl: "https://bigvybz.com",
   generateRobotsTxt: true,
   additionalPaths: async () => {
-    const response = await fetch(`${baseUrl}/api/woocommerce/products`);
+    const response = await fetch(`${baseUrl}/api/woocommerce/wc/v3/products`);
     const products = await response.json();
     if (!products || !Array.isArray(products)) {
       return [];

@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { path: string[] } }
+  context: { params: Promise<{ path: string[] }> }
 ) {
+  const params = await context.params;
   const { path } = params;
   const url = new URL(`${process.env.WOOCOMMERCE_API_URL}${path.join("/")}`);
   req.nextUrl.searchParams.forEach((value, key) =>
@@ -25,9 +26,9 @@ export async function GET(
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { path: string[] } }
+  context: { params: Promise<{ path: string[] }> }
 ) {
-  const { path } = params;
+  const { path } = await context.params;
   const url = `${process.env.WOOCOMMERCE_API_URL}${path.join("/")}`;
   const body = await req.json();
 
