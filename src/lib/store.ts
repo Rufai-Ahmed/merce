@@ -3,19 +3,23 @@ import { persistReducer, persistStore } from "redux-persist";
 import storage from "@/components/storage";
 import productsReducer from "./features/products/productsSlice";
 import cartsReducer from "./features/carts/cartsSlice";
+import authReducer from "./features/auth/auth.slice";
 import { baseApi } from "@/apis/base.api";
+import { authApi } from "@/apis/auth.api";
 
 const persistConfig = {
   key: "root",
   storage,
   version: 1,
-  whitelist: ["carts"],
+  whitelist: ["carts", "auth"],
 };
 
 const rootReducer = combineReducers({
   products: productsReducer,
   carts: cartsReducer,
+  auth: authReducer,
   [baseApi.reducerPath]: baseApi.reducer,
+  [authApi.reducerPath]: authApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -27,7 +31,7 @@ export const makeStore = () => {
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: false,
-      }).concat(baseApi.middleware),
+      }).concat(baseApi.middleware, authApi.middleware),
   });
 
   const persistor = persistStore(store);

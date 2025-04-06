@@ -1,3 +1,4 @@
+// src/components/product-page/SizeSelection.tsx
 "use client";
 
 import { setSizeSelection } from "@/lib/features/products/productsSlice";
@@ -6,7 +7,7 @@ import { RootState } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import React from "react";
 
-const SizeSelection = () => {
+const SizeSelection = ({ sizes }: { sizes: string[] }) => {
   const { sizeSelection } = useAppSelector(
     (state: RootState) => state.products
   );
@@ -18,7 +19,7 @@ const SizeSelection = () => {
         Choose Size
       </span>
       <div className="flex items-center flex-wrap lg:space-x-3">
-        {["Small", "Medium", "Large", "X-Large"].map((size, index) => (
+        {sizes.map((size, index) => (
           <button
             key={index}
             type="button"

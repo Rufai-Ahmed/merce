@@ -5,26 +5,16 @@ export type SpecItem = {
   value: string;
 };
 
-const specsData: SpecItem[] = [
-  {
-    label: " Material composition",
-    value: "100% Cotton",
-  },
-  {
-    label: "Care instructions",
-    value: "Machine wash warm, tumble dry",
-  },
-  {
-    label: "Fit type",
-    value: "Classic Fit",
-  },
-  {
-    label: "Pattern",
-    value: "Solid",
-  },
-];
+interface ProductDetailsProps {
+  attributes: { name: string; options: string[] }[];
+}
 
-const ProductDetails = () => {
+const ProductDetails = ({ attributes }: ProductDetailsProps) => {
+  const specsData: SpecItem[] = attributes.map((attr) => ({
+    label: attr.name,
+    value: attr.options.join(", "),
+  }));
+
   return (
     <>
       {specsData.map((item, i) => (

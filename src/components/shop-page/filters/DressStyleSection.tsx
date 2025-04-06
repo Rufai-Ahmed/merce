@@ -7,32 +7,26 @@ import {
 } from "@/components/ui/accordion";
 import Link from "next/link";
 import { MdKeyboardArrowRight } from "react-icons/md";
+import { useSearchParams } from "next/navigation";
 
-type DressStyle = {
-  title: string;
-  slug: string;
-};
+interface DressStyleSectionProps {
+  updateSearchParams: (params: {
+    [key: string]: string | number | undefined;
+  }) => void;
+}
 
-const dressStylesData: DressStyle[] = [
-  {
-    title: "Casual",
-    slug: "/shop?style=casual",
-  },
-  {
-    title: "Formal",
-    slug: "/shop?style=formal",
-  },
-  {
-    title: "Party",
-    slug: "/shop?style=party",
-  },
-  {
-    title: "Gym",
-    slug: "/shop?style=gym",
-  },
+const dressStylesData = [
+  { title: "Casual", slug: "casual" },
+  { title: "Formal", slug: "formal" },
+  { title: "Party", slug: "party" },
+  { title: "Gym", slug: "gym" },
 ];
 
-const DressStyleSection = () => {
+const DressStyleSection: React.FC<DressStyleSectionProps> = ({
+  updateSearchParams,
+}) => {
+  const searchParams = useSearchParams();
+  const selectedStyle = searchParams.get("style") || "";
   return (
     <Accordion type="single" collapsible defaultValue="filter-style">
       <AccordionItem value="filter-style" className="border-none">
@@ -41,14 +35,18 @@ const DressStyleSection = () => {
         </AccordionTrigger>
         <AccordionContent className="pt-4 pb-0">
           <div className="flex flex-col text-black/60 space-y-0.5">
-            {dressStylesData.map((dStyle, idx) => (
-              <Link
-                key={idx}
-                href={dStyle.slug}
-                className="flex items-center justify-between py-2"
+            {dressStylesData.map((dStyle) => (
+              <button
+                key={dStyle.slug}
+                onClick={() =>
+                  updateSearchParams({ style: dStyle.slug, page: 1 })
+                }
+                className={`flex items-center justify-between py-2 ${
+                  selectedStyle === dStyle.slug ? "text-black font-medium" : ""
+                }`}
               >
                 {dStyle.title} <MdKeyboardArrowRight />
-              </Link>
+              </button>
             ))}
           </div>
         </AccordionContent>

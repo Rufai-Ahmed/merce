@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import { Review } from "@/types/review.types";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
 
 type ReviewCardProps = {
   blurChild?: React.ReactNode;
@@ -21,6 +22,8 @@ const ReviewCard = ({
   data,
   className,
 }: ReviewCardProps) => {
+  const formattedDate = format(new Date(data.date), "MMMM d, yyyy");
+
   return (
     <div
       className={cn([
@@ -47,10 +50,10 @@ const ReviewCard = ({
         <strong className="text-black sm:text-xl mr-1">{data.user}</strong>
         <IoIosCheckmarkCircle className="text-[#01AB31] text-xl sm:text-2xl" />
       </div>
-      <p className="text-sm sm:text-base text-black/60">{data.content}</p>
+      <p className="text-sm sm:text-base text-black/60" dangerouslySetInnerHTML={{__html: data.content}}></p>
       {isDate && (
         <p className="text-black/60 text-sm font-medium mt-4 sm:mt-6">
-          Posted on {data.date}
+          Posted on {formattedDate}
         </p>
       )}
     </div>

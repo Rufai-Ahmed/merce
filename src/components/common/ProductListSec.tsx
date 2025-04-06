@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import * as motion from "framer-motion/client";
 import { cn } from "@/lib/utils";
@@ -10,14 +11,49 @@ import {
 import ProductCard from "./ProductCard";
 import { Product } from "@/types/product.types";
 import Link from "next/link";
+import { Skeleton } from "../ui/skeleton";
 
 type ProductListSecProps = {
   title: string;
   data: Product[];
   viewAllLink?: string;
+  isLoading: boolean;
 };
 
-const ProductListSec = ({ title, data, viewAllLink }: ProductListSecProps) => {
+const ProductListSec = ({
+  title,
+  data,
+  viewAllLink,
+  isLoading = false,
+}: ProductListSecProps) => {
+  if (isLoading) {
+    return (
+      <section className="max-w-frame mx-auto text-center">
+        <motion.h2
+          initial={{ y: "100px", opacity: 0 }}
+          whileInView={{ y: "0", opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className={cn([
+            integralCF.className,
+            "text-[32px] md:text-5xl mb-8 md:mb-14 capitalize",
+          ])}
+        >
+          {title}
+        </motion.h2>
+        <div className="product-list grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, index) => (
+            <div key={index} className="product-item">
+              <Skeleton className="w-full h-48" />
+              <Skeleton className="h-4 w-3/4 mt-2" />
+              <Skeleton className="h-4 w-1/2 mt-2" />
+              <Skeleton className="h-4 w-1/4 mt-2" />
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
   return (
     <section className="max-w-frame mx-auto text-center">
       <motion.h2

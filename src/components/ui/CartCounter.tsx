@@ -1,42 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { FaMinus, FaPlus } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
 
 type CartCounterProps = {
   isZeroDelete?: boolean;
-  onAdd?: (value: number) => void;
-  onRemove?: (value: number) => void;
+  onAdd: () => void;
+  onRemove: () => void;
   className?: string;
-  initialValue?: number;
+  value: number;
 };
 
 const CartCounter = ({
-  isZeroDelete,
+  isZeroDelete = false,
   onAdd,
   onRemove,
   className,
-  initialValue = 1,
+  value,
 }: CartCounterProps) => {
-  const [counter, setCounter] = useState<number>(initialValue);
-
-  const addToCart = () => {
-    if (onAdd) {
-      onAdd(counter + 1);
-    }
-    setCounter(counter + 1);
+  const handleRemove = () => {
+    if (value <= 0 || (!isZeroDelete && value === 1)) return;
+    onRemove();
   };
 
-  const remove = () => {
-    if ((counter === 1 && !isZeroDelete) || counter <= 0) return;
-
-    if (onRemove) {
-      onRemove(counter - 1);
-    }
-    if (counter - 1 <= 0) return;
-    setCounter(counter - 1);
+  const handleAdd = () => {
+    onAdd();
   };
 
   return (
@@ -51,19 +41,18 @@ const CartCounter = ({
         size="icon"
         type="button"
         className="h-5 w-5 sm:h-6 sm:w-6 text-xl hover:bg-transparent"
-        onClick={() => remove()}
+        onClick={handleRemove}
+        disabled={value <= 0 || (!isZeroDelete && value === 1)}
       >
         <FaMinus />
       </Button>
-      <span className="font-medium text-sm sm:text-base">
-        {!isZeroDelete ? counter : initialValue}
-      </span>
+      <span className="font-medium text-sm sm:text-base">{value}</span>
       <Button
         variant="ghost"
         size="icon"
         type="button"
         className="h-5 w-5 sm:h-6 sm:w-6 text-xl hover:bg-transparent"
-        onClick={() => addToCart()}
+        onClick={handleAdd}
       >
         <FaPlus />
       </Button>

@@ -16,15 +16,19 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
 import { useIsClient, useMediaQuery } from "usehooks-ts";
 import ReviewCard from "@/components/common/ReviewCard";
 import { Review } from "@/types/review.types";
+import { useGetReviewsQuery } from "@/apis/review.api";
+import { Skeleton } from "@/components/ui/skeleton";
 
-type ReviewsProps = { data: Review[] };
-
-const Reviews = ({ data }: ReviewsProps) => {
+const Reviews = () => {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const isClient = useIsClient();
+  const { data: reviews, isLoading } = useGetReviewsQuery({
+    perPage: 6,
+    fields: ["id", "reviewer", "rating", "date_created", "review"],
+  });
 
   React.useEffect(() => {
     if (!api) {
@@ -40,6 +44,8 @@ const Reviews = ({ data }: ReviewsProps) => {
   }, [api]);
 
   if (!isClient) return null;
+
+  const reviewList = reviews || [];
 
   return (
     <section className="overflow-hidden">
@@ -80,48 +86,60 @@ const Reviews = ({ data }: ReviewsProps) => {
             </div>
           </div>
           <CarouselContent>
-            {data.map((review, index) => (
-              <CarouselItem
-                key={review.id}
-                className="w-full max-w-[358px] sm:max-w-[400px] pl-5"
-              >
-                <ReviewCard
-                  className="h-full"
-                  data={review}
-                  blurChild={
-                    data.length >= 6 && (
-                      <div
-                        className={cn([
-                          isDesktop
-                            ? (current + 1 === count
-                                ? 0
-                                : current + 1 > count
-                                ? 1
-                                : current + 1) === index &&
-                              "backdrop-blur-[2px]"
-                            : (current === count ? 0 : current) === index &&
-                              "backdrop-blur-[2px]",
-                          isDesktop
-                            ? (current === 1
-                                ? count - 2
-                                : current === 2
-                                ? count - 1
-                                : current - 3) === index &&
-                              "backdrop-blur-[2px]"
-                            : (current === 1
-                                ? count - 1
-                                : current === 2
-                                ? 0
-                                : current - 2) === index &&
-                              "backdrop-blur-[2px]",
-                          "absolute bg-white/10 right-0 top-0 h-full w-full z-10",
-                        ])}
-                      />
-                    )
-                  }
-                />
-              </CarouselItem>
-            ))}
+            {isLoading
+              ? Array(6)
+                  .fill(null)
+                  .map((_, index) => (
+                    <CarouselItem
+                      key={index}
+                      className="w-full max-w-[358px] sm:max-w-[400px] pl-5"
+                    >
+                      <Skeleton className="h-40 bg-gray-200 animate-pulse" />
+                    </CarouselItem>
+                  ))
+              : reviewList.map((review, index) => (
+                  <CarouselItem
+                    key={review.id}
+                    className="w-full max-w-[358px] sm:max-w-[400px] pl-5"
+                  >
+                    <ReviewCard
+                      className="h-full"
+                      data={review}
+                      isDate
+                      blurChild={
+                        reviewList.length >= 6 && (
+                          <div
+                            className={cn([
+                              isDesktop
+                                ? (current + 1 === count
+                                    ? 0
+                                    : current + 1 > count
+                                    ? 1
+                                    : current + 1) === index &&
+                                  "backdrop-blur-[2px]"
+                                : (current === count ? 0 : current) === index &&
+                                  "backdrop-blur-[2px]",
+                              isDesktop
+                                ? (current === 1
+                                    ? count - 2
+                                    : current === 2
+                                    ? count - 1
+                                    : current - 3) === index &&
+                                  "backdrop-blur-[2px]"
+                                : (current === 1
+                                    ? count - 1
+                                    : current === 2
+                                    ? 0
+                                    : current - 2) === index &&
+                                  "backdrop-blur-[2px]",
+                              "absolute bg-white/10 right-0 top-0 h-full w-full z-10",
+                            ])}
+                          />
+                        )
+                      }
+                    />
+                  </CarouselItem>
+                ))}
           </CarouselContent>
         </Carousel>
       </motion.div>

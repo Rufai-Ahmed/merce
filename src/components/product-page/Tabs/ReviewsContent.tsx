@@ -8,10 +8,32 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ReviewCard from "@/components/common/ReviewCard";
-import { reviewsData } from "@/app/page";
 import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
+interface ReviewsContentProps {
+  reviewsData: any[];
+  isLoading: boolean;
+  productId: number;
+}
 
-const ReviewsContent = () => {
+const ReviewsContent = ({
+  reviewsData,
+  isLoading,
+  productId,
+}: ReviewsContentProps) => {
+  if (isLoading) {
+    return (
+      <section>
+        <Skeleton className="h-8 w-1/4 mb-6" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-9">
+          {[...Array(4)].map((_, i) => (
+            <Skeleton key={i} className="h-32 w-full" />
+          ))}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section>
       <div className="flex items-center justify-between flex-col sm:flex-row mb-5 sm:mb-6">
@@ -19,7 +41,9 @@ const ReviewsContent = () => {
           <h3 className="text-xl sm:text-2xl font-bold text-black mr-2">
             All Reviews
           </h3>
-          <span className="text-sm sm:text-base text-black/60">(451)</span>
+          <span className="text-sm sm:text-base text-black/60">
+            ({reviewsData.length})
+          </span>
         </div>
         <div className="flex items-center space-x-2.5">
           <Select defaultValue="latest">
@@ -42,18 +66,35 @@ const ReviewsContent = () => {
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5 sm:mb-9">
-        {reviewsData.map((review) => (
-          <ReviewCard key={review.id} data={review} isAction isDate />
-        ))}
+        {reviewsData.length > 0 ? (
+          reviewsData.map((review) => (
+            <ReviewCard
+              key={review.id}
+              data={{
+                id: review.id,
+                user: review.reviewer,
+                rating: review.rating,
+                content: review.review,
+                date: review.date_created,
+              }}
+              isAction
+              isDate
+            />
+          ))
+        ) : (
+          <p className="text-sm text-neutral-500 col-span-2">No reviews yet.</p>
+        )}
       </div>
-      <div className="w-full px-4 sm:px-0 text-center">
-        <Link
-          href="#"
-          className="inline-block w-[230px] px-11 py-4 border rounded-full hover:bg-black hover:text-white text-black transition-all font-medium text-sm sm:text-base border-black/10"
-        >
-          Load More Reviews
-        </Link>
-      </div>
+      {reviewsData.length > 0 && (
+        <div className="w-full px-4 sm:px-0 text-center">
+          <button
+            // href={`/product/${productId}/reviews`} 
+            className="inline-block w-[230px] px-11 py-4 border rounded-full hover:bg-black hover:text-white text-black transition-all font-medium text-sm sm:text-base border-black/10"
+          >
+            Load More Reviews
+          </button>
+        </div>
+      )}
     </section>
   );
 };

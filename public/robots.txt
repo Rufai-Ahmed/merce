@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://bigvybz.com
+
+# Sitemaps
+Sitemap: https://bigvybz.com/sitemap.xml

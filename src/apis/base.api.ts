@@ -1,21 +1,30 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { RootState } from "@/lib/store";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const WC_BASE_URL = process.env.NEXT_PUBLIC_WC_BASE_URL; 
-const consumerKey = process.env.NEXT_PUBLIC_WC_CONSUMER_KEY;
-const consumerSecret = process.env.NEXT_PUBLIC_WC_CONSUMER_SECRET;
-
-export const addAuthParams = (params: Record<string, any> = {}) => ({
-  ...params,
-  consumer_key: consumerKey,
-  consumer_secret: consumerSecret,
-});
+export const BASE_URL = "/api/woocommerce/wc/v3";
 
 export const baseApi = createApi({
-  reducerPath: 'baseApi',
+  reducerPath: "baseApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: WC_BASE_URL,
+    baseUrl: BASE_URL,
+    prepareHeaders: (headers, { getState }) => {
+      const token = (getState() as RootState).auth.token;
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
   }),
   endpoints: () => ({}),
+  tagTypes: [
+    "Products",
+    "Attributes",
+    "AttributeTerms",
+    "Categories",
+    "Reviews",
+    "Orders",
+    "ShippingMethods",
+  ],
 });
 
-export const {  } = baseApi;
+export const {} = baseApi;

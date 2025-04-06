@@ -1,5 +1,5 @@
 // src/api/customers.api.ts
-import { baseApi, addAuthParams } from './base.api';
+import { baseApi, } from "./base.api";
 
 export interface Customer {
   id: number;
@@ -13,37 +13,39 @@ export const customersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getCustomers: builder.query<Customer[], void>({
       query: () => ({
-        url: 'customers',
-        params: addAuthParams(),
+        url: "customers",
       }),
     }),
     getCustomerById: builder.query<Customer, number>({
       query: (id) => ({
         url: `customers/${id}`,
-        params: addAuthParams(),
       }),
     }),
     createCustomer: builder.mutation<Customer, Partial<Customer>>({
       query: (body) => ({
-        url: 'customers',
-        method: 'POST',
+        url: "customers",
+        method: "POST",
         body,
-        params: addAuthParams(),
       }),
     }),
-    updateCustomer: builder.mutation<Customer, { id: number; data: Partial<Customer> }>({
+    updateCustomer: builder.mutation<
+      Customer,
+      { id: number; data: Partial<Customer> }
+    >({
       query: ({ id, data }) => ({
         url: `customers/${id}`,
-        method: 'PUT',
+        method: "PUT",
         body: data,
-        params: addAuthParams(),
       }),
     }),
-    deleteCustomer: builder.mutation<{ deleted: boolean; previous: Customer }, number>({
+    deleteCustomer: builder.mutation<
+      { deleted: boolean; previous: Customer },
+      number
+    >({
       query: (id) => ({
         url: `customers/${id}`,
-        method: 'DELETE',
-        params: { force: true, ...addAuthParams() },
+        method: "DELETE",
+        params: { force: true },
       }),
     }),
   }),

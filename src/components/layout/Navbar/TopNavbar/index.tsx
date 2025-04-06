@@ -1,3 +1,6 @@
+// src/components/navbar/TopNavbar.tsx
+"use client";
+
 import { cn } from "@/lib/utils";
 import { integralCF } from "@/styles/fonts";
 import Link from "next/link";
@@ -13,6 +16,14 @@ import Image from "next/image";
 import InputGroup from "@/components/ui/input-group";
 import ResTopNavbar from "./ResTopNavbar";
 import CartBtn from "./CartBtn";
+import { useAppSelector } from "@/lib/hooks/redux";
+import { motion } from "framer-motion";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const data: NavMenu = [
   {
@@ -70,6 +81,8 @@ const data: NavMenu = [
 ];
 
 const TopNavbar = () => {
+  const { token } = useAppSelector((state) => state.auth);
+
   return (
     <nav className="sticky top-0 bg-white z-20">
       <div className="flex relative max-w-frame mx-auto items-center justify-between md:justify-start py-5 md:py-6 px-4 xl:px-0">
@@ -84,7 +97,13 @@ const TopNavbar = () => {
               "text-2xl lg:text-[32px] mb-2 mr-3 lg:mr-10",
             ])}
           >
-            SHOP.CO
+            <Image
+              src={"/images/rex.png"}
+              width={100}
+              height={100}
+              alt="Logo"
+              className="w-[200px] h-auto"
+            />
           </Link>
         </div>
         <NavigationMenu className="hidden md:flex mr-2 lg:mr-7">
@@ -119,7 +138,7 @@ const TopNavbar = () => {
             className="bg-transparent placeholder:text-black/40"
           />
         </InputGroup>
-        <div className="flex items-center">
+        <div className="flex items-center space-x-4">
           <Link href="/search" className="block md:hidden mr-[14px] p-1">
             <Image
               priority
@@ -131,16 +150,43 @@ const TopNavbar = () => {
             />
           </Link>
           <CartBtn />
-          <Link href="/#signin" className="p-1">
-            <Image
-              priority
-              src="/icons/user.svg"
-              height={100}
-              width={100}
-              alt="user"
-              className="max-w-[22px] max-h-[22px]"
-            />
-          </Link>
+          {token ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="p-1">
+                  <Image
+                    priority
+                    src="/icons/user.svg"
+                    height={100}
+                    width={100}
+                    alt="User Menu"
+                    className="max-w-[22px] max-h-[22px]"
+                  />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-48">
+                <DropdownMenuItem asChild>
+                  <Link href="/profile" className="w-full">
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/orders" className="w-full">
+                    Orders
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link
+                href="/auth/login"
+                className="px-4 py-2 bg-black text-white text-sm font-medium rounded-md hover:bg-black/80 transition-colors"
+              >
+                Login
+              </Link>
+            </motion.div>
+          )}
         </div>
       </div>
     </nav>

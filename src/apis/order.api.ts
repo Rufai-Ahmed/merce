@@ -1,58 +1,76 @@
-// src/api/orders.api.ts
-import { baseApi, addAuthParams } from './base.api';
+import { baseApi } from "./base.api";
 
 export interface Order {
   id: number;
   status: string;
   total: string;
-  // ... include additional order properties as needed
+  date_created: Date | string;
 }
 
 export const ordersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getOrders: builder.query<Order[], void>({
+    createOrder: builder.mutation<
+      any,
+      {
+        line_items: {
+          product_id: number;
+          quantity: number;
+          variation_id?: number;
+        }[];
+        billing: any;
+        shipping: any;
+        shipping_lines?: {
+          method_id: string;
+          method_title: string;
+          total: string;
+        }[];
+      }
+    >({
+      query: (orderData) => ({
+        url: "orders",
+        method: "POST",
+        body: {
+          payment_method: "flutterwave",
+          payment_method_title: "Flutterwave",
+          set_paid: false,
+          status: "pending",
+          ...orderData,
+        },
+      }),
+      invalidatesTags: [{ type: "Orders", id: "LIST" }],
+    }),
+    getOrders: builder.query<Order[], number>({
+      query: (customerId) => `orders?customer=${customerId}`,
+      providesTags: ["Orders"],
+    }),
+
+    getOrderById: builder.query<any, number>({
+      query: (orderId) => ({
+        url: `orders/${orderId}`,
+      }),
+      providesTags: (result) =>
+        result ? [{ type: "Orders", id: result.id }] : [],
+    }),
+
+    getShippingMethods: builder.query<any[], void>({
       query: () => ({
-        url: 'orders',
-        params: addAuthParams(),
+        url: "shipping_methods",
       }),
-    }),
-    getOrderById: builder.query<Order, number>({
-      query: (id) => ({
-        url: `orders/${id}`,
-        params: addAuthParams(),
-      }),
-    }),
-    createOrder: builder.mutation<Order, Partial<Order>>({
-      query: (body) => ({
-        url: 'orders',
-        method: 'POST',
-        body,
-        params: addAuthParams(),
-      }),
-    }),
-    updateOrder: builder.mutation<Order, { id: number; data: Partial<Order> }>({
-      query: ({ id, data }) => ({
-        url: `orders/${id}`,
-        method: 'PUT',
-        body: data,
-        params: addAuthParams(),
-      }),
-    }),
-    deleteOrder: builder.mutation<{ deleted: boolean; previous: Order }, number>({
-      query: (id) => ({
-        url: `orders/${id}`,
-        method: 'DELETE',
-        params: { force: true, ...addAuthParams() },
-      }),
+      transformResponse: (response: any[]) =>
+        response.map((method) => ({
+          id: method.id,
+          title: method.title,
+          cost: method.settings?.cost?.value || "0",
+        })),
+      providesTags: [{ type: "ShippingMethods", id: "LIST" }],
     }),
   }),
   overrideExisting: false,
 });
 
 export const {
-  useGetOrdersQuery,
+  useGetShippingMethodsQuery,
   useGetOrderByIdQuery,
   useCreateOrderMutation,
-  useUpdateOrderMutation,
-  useDeleteOrderMutation,
+  useGetOrdersQuery,
 } = ordersApi;

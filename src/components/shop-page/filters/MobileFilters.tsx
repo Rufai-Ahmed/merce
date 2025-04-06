@@ -12,10 +12,23 @@ import {
 import { FiSliders } from "react-icons/fi";
 import Filters from ".";
 
-const MobileFilters = () => {
+interface MobileFiltersProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  updateSearchParams: (params: {
+    [key: string]: string | number | undefined;
+  }) => void;
+}
+
+const MobileFilters: React.FC<MobileFiltersProps> = ({
+  isOpen,
+  setIsOpen,
+  updateSearchParams,
+}) => {
   return (
     <>
-      <Drawer>
+      <Drawer open={isOpen} onOpenChange={setIsOpen}>
+        {" "}
         <DrawerTrigger asChild>
           <button
             type="button"
@@ -34,7 +47,7 @@ const MobileFilters = () => {
             <DrawerDescription className="hidden">filters</DrawerDescription>
           </DrawerHeader>
           <div className="max-h-[90%] overflow-y-auto w-full px-5 md:px-6 py-5 space-y-5 md:space-y-6">
-            <Filters />
+            <Filters updateSearchParams={updateSearchParams} />{" "}
           </div>
         </DrawerContent>
       </Drawer>

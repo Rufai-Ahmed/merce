@@ -8,8 +8,8 @@ export type Color = {
 
 // Define a type for the slice state
 interface ProductsState {
-  colorSelection: Color;
-  sizeSelection: string;
+  colorSelection: Color | null;
+  sizeSelection: string | null;
 }
 
 // Define the initial state using that type
@@ -32,9 +32,13 @@ export const productsSlice = createSlice({
     setSizeSelection: (state, action: PayloadAction<string>) => {
       state.sizeSelection = action.payload;
     },
+    emptySelection: (state) => {
+      state.sizeSelection = null;
+      state.colorSelection = null;
+    },
   },
 });
 
-export const { setColorSelection, setSizeSelection } = productsSlice.actions;
+export const { setColorSelection, setSizeSelection, emptySelection } = productsSlice.actions;
 
 export default productsSlice.reducer;
