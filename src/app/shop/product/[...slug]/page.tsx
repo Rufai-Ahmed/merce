@@ -5,6 +5,7 @@ import ProductPageClient from "./product-client-page";
 type Slug = {
   slug: string[];
 };
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
 export async function generateMetadata({
   params,
@@ -21,7 +22,7 @@ export async function generateMetadata({
   }
 
   const response = await fetch(
-    `http://localhost:3000/api/woocommerce/wc/v3/products/${productId}`
+    `${baseUrl}/api/woocommerce/wc/v3/products/${productId}`
   );
   const product = await response.json();
 
@@ -61,7 +62,7 @@ export default async function ProductPage({
   }
 
   const response = await fetch(
-    `http://localhost:3000/api/woocommerce/wc/v3/products/${productId}`
+    `${baseUrl}/api/woocommerce/wc/v3/products/${productId}`
   );
   const product = await response.json();
 
