@@ -1,11 +1,6 @@
 "use client";
 
-import React from "react";
-import { PiTrashFill } from "react-icons/pi";
-import Image from "next/image";
-import Link from "next/link";
 import CartCounter from "@/components/ui/CartCounter";
-import { Button } from "../ui/button";
 import {
   addToCart,
   CartItem,
@@ -13,6 +8,10 @@ import {
   removeCartItem,
 } from "@/lib/features/carts/cartsSlice";
 import { useAppDispatch } from "@/lib/hooks/redux";
+import Image from "next/image";
+import Link from "next/link";
+import { PiTrashFill } from "react-icons/pi";
+import { Button } from "../ui/button";
 
 type ProductCardProps = {
   data: CartItem;

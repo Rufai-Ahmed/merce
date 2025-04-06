@@ -117,7 +117,12 @@ export const cartsSlice = createSlice({
       const itemToRemove = state.cart.items.find(
         (item) =>
           item.id === action.payload.id &&
-          compareArrays(item.attributes, action.payload.attributes)
+          compareArrays(
+            typeof item.attributes?.[0] === "object"
+              ? item.attributes.map((a) => a.options)
+              : item.attributes,
+            action.payload.attributes
+          )
       );
 
       if (itemToRemove) {
@@ -125,7 +130,12 @@ export const cartsSlice = createSlice({
           (item) =>
             !(
               item.id === action.payload.id &&
-              compareArrays(item.attributes, action.payload.attributes)
+              compareArrays(
+                typeof item.attributes?.[0] === "object"
+                  ? item.attributes.map((a) => a.options)
+                  : item.attributes,
+                action.payload.attributes
+              )
             )
         );
         state.cart.totalQuantities -= itemToRemove.quantity;

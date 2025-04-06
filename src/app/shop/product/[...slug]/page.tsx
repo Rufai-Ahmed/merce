@@ -21,7 +21,7 @@ export async function generateMetadata({
   }
 
   const response = await fetch(
-    `http://localhost:3000/api/woocommerce/products/${productId}`
+    `http://localhost:3000/api/woocommerce/wc/v3/products/${productId}`
   );
   const product = await response.json();
 
@@ -61,7 +61,7 @@ export default async function ProductPage({
   }
 
   const response = await fetch(
-    `http://localhost:3000/api/woocommerce/products/${productId}`
+    `http://localhost:3000/api/woocommerce/wc/v3/products/${productId}`
   );
   const product = await response.json();
 
