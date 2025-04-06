@@ -2,15 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  context: { params: Promise<{ path: string[] }> }
+  { params }: { params: { path: string[] } }
 ) {
-  const params = await context.params;
   const { path } = params;
   const url = new URL(`${process.env.WOOCOMMERCE_API_URL}${path.join("/")}`);
   req.nextUrl.searchParams.forEach((value, key) =>
     url.searchParams.append(key, value)
   );
-  console.debug({ url: url.toString() });
 
   const response = await fetch(url, {
     method: "GET",
