@@ -38,10 +38,14 @@ export default function LoginPage() {
         transition={{ duration: 0.5 }}
         className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md"
       >
-        <h2 className="text-3xl font-bold mb-6 text-center text-black">Welcome Back</h2>
+        <h2 className="text-3xl font-bold mb-6 text-center text-black">
+          Welcome Back
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Username or Email</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Username or email
+            </label>
             <input
               type="text"
               value={username}
@@ -51,7 +55,9 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
             <input
               type="password"
               value={password}
@@ -69,7 +75,15 @@ export default function LoginPage() {
           >
             {isLoading ? "Logging in..." : "Login"}
           </motion.button>
-          {error && <p className="text-sm text-red-600">{(error as any)?.data?.message || "Login failed."}</p>}
+          {error && (
+            <p
+              className="text-sm text-red-600"
+              dangerouslySetInnerHTML={{
+                __html:
+                  (error as any)?.data?.message || "<p>Error logging in</p>",
+              }}
+            ></p>
+          )}
         </form>
         <p className="mt-4 text-center text-sm text-gray-600">
           Don’t have an account?{" "}

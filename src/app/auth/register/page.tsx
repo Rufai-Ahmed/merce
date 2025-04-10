@@ -25,7 +25,7 @@ export default function RegisterPage() {
     e.preventDefault();
     try {
       await register(formData).unwrap();
-      router.push("/login");
+      router.push("/auth/login");
     } catch (err) {
       console.error("Registration failed:", err);
     }
@@ -115,8 +115,11 @@ export default function RegisterPage() {
             {isLoading ? "Registering..." : "Register"}
           </motion.button>
           {error && (
-            <p className="text-sm text-red-600">
-              {(error as any)?.data?.message || "Registration failed."}
+            <p className="text-sm text-red-600"
+            dangerouslySetInnerHTML={{
+              __html: (error as any)?.data?.message || "<p>Error Registering</p>",
+            }}
+            >
             </p>
           )}
         </form>
