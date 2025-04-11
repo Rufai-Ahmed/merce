@@ -105,25 +105,8 @@ const Header = () => {
             whileInView={{ y: "0", opacity: 1, rotate: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 2.3, duration: 0.8 }}
-            className="relative hidden md:block md:px-4 min-h-[448px] md:min-h-[428px] bg-cover bg-top xl:bg-[center_top_-1.6rem] bg-no-repeat bg-[url('/images/header-res-homepage.png')] md:bg-[url('/images/header-homepage.png')]"
-          >
-            <Image
-              priority
-              src="/icons/big-star.svg"
-              height={104}
-              width={104}
-              alt="big star"
-              className="absolute right-7 xl:right-0 top-12 max-w-[76px] max-h-[76px] lg:max-w-24 lg:max-h-max-w-24 xl:max-w-[104px] xl:max-h-[104px] animate-[spin_4s_infinite]"
-            />
-            <Image
-              priority
-              src="/icons/small-star.svg"
-              height={56}
-              width={56}
-              alt="small star"
-              className="absolute left-7 md:left-0 top-36 sm:top-64 md:top-44 lg:top-56 max-w-11 max-h-11 md:max-w-14 md:max-h-14 animate-[spin_3s_infinite]"
-            />
-          </motion.section>
+            className="relative hidden md:block md:px-4 min-h-[448px] md:min-h-[428px] bg-cover bg-top xl:bg-[center_top_-9.6rem] bg-no-repeat bg-[url('/images/header-res-homepage.png')] md:bg-[url('/images/header-homepage.png')]"
+          ></motion.section>
         </div>
       </div>
     </header>
