@@ -28,7 +28,7 @@ const ProductListSec = ({
 }: ProductListSecProps) => {
   if (isLoading) {
     return (
-      <section className="max-w-frame mx-auto text-center">
+      <section className="max-w-frame mx-auto px-4 text-center">
         <motion.h2
           initial={{ y: "100px", opacity: 0 }}
           whileInView={{ y: "0", opacity: 1 }}
