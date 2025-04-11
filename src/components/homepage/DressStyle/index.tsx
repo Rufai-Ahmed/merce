@@ -28,14 +28,14 @@ const DressStyle = () => {
           className="flex flex-col sm:flex-row md:h-[289px] space-y-4 sm:space-y-0 sm:space-x-5 mb-4 sm:mb-5"
         >
           <DressStyleCard
-            title="Casual"
-            url="/shop#casual"
-            className="md:max-w-[260px] lg:max-w-[360px] xl:max-w-[407px] h-[190px] bg-[url('/images/dress-style-1.png')]"
+            title="Cap"
+            url="/shop#cap"
+            className="md:max-w-[260px] lg:max-w-[360px] xl:max-w-[407px] h-[190px] bg-[url('/images/capvybz.jpg')] bg-[center_top_20%]"
           />
           <DressStyleCard
             title="Formal"
             url="/shop#formal"
-            className="md:max-w-[684px] h-[190px] bg-[url('/images/dress-style-2.png')]"
+            className="md:max-w-[684px] h-[190px] bg-[url('/images/backvybz.jpg')] bg-[center_top_30%]"
           />
         </motion.div>
         <motion.div
@@ -48,12 +48,12 @@ const DressStyle = () => {
           <DressStyleCard
             title="Party"
             url="/shop#party"
-            className="md:max-w-[684px] h-[190px] bg-[url('/images/dress-style-3.png')]"
+            className="md:max-w-[684px] h-[190px] bg-[url('/images/femaleVybz.jpg')] bg-[center_top_40%]"
           />
           <DressStyleCard
-            title="Gym"
-            url="/shop#gym"
-            className="md:max-w-[260px] lg:max-w-[360px] xl:max-w-[407px] h-[190px] bg-[url('/images/dress-style-4.png')]"
+            title="Shorts"
+            url="/shop#shorts"
+            className="md:max-w-[260px] lg:max-w-[360px] xl:max-w-[407px] h-[190px] bg-[url('/images/shortvybz.jpg')] bg-center md:bg-[center_top_15%] bg-cover"
           />
         </motion.div>
       </section>
