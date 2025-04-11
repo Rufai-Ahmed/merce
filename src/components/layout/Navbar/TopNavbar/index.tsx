@@ -60,8 +60,8 @@ const data: NavMenu = [
   {
     id: 2,
     type: "MenuItem",
-    label: "On Sale",
-    url: "/shop#on-sale",
+    label: "About",
+    url: "/about",
     children: [],
   },
   {
