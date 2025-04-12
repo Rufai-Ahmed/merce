@@ -11,7 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { integralCF } from "@/styles/fonts";
-import { NavMenu } from "../navbar.types";
+import type { NavMenu } from "../navbar.types";
 import {
   Accordion,
   AccordionContent,
@@ -66,15 +66,13 @@ const ResTopNavbar = ({ data }: { data: NavMenu }) => {
                         {item.label}
                       </AccordionTrigger>
                       <AccordionContent className="p-4 pb-0 border-l flex flex-col">
-                        {item.children.map((itemChild, idx) => (
+                        {item.children.map((child) => (
                           <SheetClose
-                            key={itemChild.id}
+                            key={child.id}
                             asChild
                             className="w-fit py-2 text-base"
                           >
-                            <Link href={itemChild.url ?? "/"}>
-                              {itemChild.label}
-                            </Link>
+                            <Link href={child.url ?? "/"}>{child.label}</Link>
                           </SheetClose>
                         ))}
                       </AccordionContent>

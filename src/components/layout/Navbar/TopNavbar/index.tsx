@@ -1,113 +1,83 @@
-// src/components/navbar/TopNavbar.tsx
 "use client";
 
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { integralCF } from "@/styles/fonts";
-import Link from "next/link";
-import React from "react";
-import { NavMenu } from "../navbar.types";
-import { MenuList } from "./MenuList";
+import { motion } from "framer-motion";
+import { useAppSelector } from "@/lib/hooks/redux";
 import {
   NavigationMenu,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { MenuItem } from "./MenuItem";
-import Image from "next/image";
+import { MenuList } from "./MenuList";
 import InputGroup from "@/components/ui/input-group";
-import ResTopNavbar from "./ResTopNavbar";
 import CartBtn from "./CartBtn";
-import { useAppSelector } from "@/lib/hooks/redux";
-import { motion } from "framer-motion";
+import ResTopNavbar from "./ResTopNavbar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-const data: NavMenu = [
-  {
-    id: 1,
-    label: "Shop",
-    type: "MenuList",
-    children: [
-      {
-        id: 11,
-        label: "T-Shirts",
-        url: "/shop#men-clothes",
-        description: "In attractive and spectacular colors and designs",
-      },
-      {
-        id: 12,
-        label: "Hoodies & Sweatshirts",
-        url: "/shop#women-clothes",
-        description: "Ladies, your style and tastes are important to us",
-      },
-      {
-        id: 13,
-        label: "Caps & Beanies",
-        url: "/shop#kids-clothes",
-        description: "For all ages, with happy and beautiful colors",
-      },
-      {
-        id: 14,
-        label: "Jerseys",
-        url: "/shop#bag-shoes",
-        description: "Suitable for men, women and all tastes and styles",
-      },
-      {
-        id: 15,
-        label: "Tracksuits / Sets",
-        url: "/shop#bag-shoes",
-        description: "Suitable for men, women and all tastes and styles",
-      },
-      {
-        id: 16,
-        label: "Accessories",
-        url: "/shop#bag-shoes",
-        description: "Suitable for men, women and all tastes and styles",
-      },
-    ],
-  },
-  {
-    id: 2,
-    type: "MenuItem",
-    label: "About",
-    url: "/about",
-    children: [],
-  },
-  {
-    id: 3,
-    type: "MenuItem",
-    label: "New Arrivals",
-    url: "/shop#new-arrivals",
-    children: [],
-  },
-  {
-    id: 4,
-    type: "MenuItem",
-    label: "Vybz Gallery",
-    url: "/photos",
-    children: [],
-  },
-  {
-    id: 5,
-    type: "MenuItem",
-    label: "The Vybz Journal",
-    url: "/photos",
-    children: [],
-  },
-  {
-    id: 6,
-    type: "MenuItem",
-    label: "Contact",
-    url: "/photos",
-    children: [],
-  },
-];
+import { useGetCategoriesQuery } from "@/apis/category.api";
+import { Skeleton } from "@/components/ui/skeleton";
+import type { NavMenu } from "../navbar.types";
 
 const TopNavbar = () => {
   const { token } = useAppSelector((state) => state.auth);
+
+  const { data: categories, isLoading } = useGetCategoriesQuery({
+    fields: ["name", "slug", "id"],
+  });
+
+  const shopChildren = isLoading
+    ? [
+        {
+          id: "loading",
+          label: <Skeleton className="w-24 h-4" />,
+          url: "#",
+          description: "",
+        },
+      ]
+    : (categories || []).map((category) => ({
+        id: category.id,
+        label: category.name,
+        url: `/shop?category=${category.id}`,
+        description: "",
+      }));
+
+  const data: NavMenu = [
+    {
+      id: 1,
+      label: "Shop",
+      type: "MenuList",
+      children: shopChildren,
+    },
+    {
+      id: 2,
+      type: "MenuItem",
+      label: "On Sale",
+      url: "/shop#on-sale",
+      children: [],
+    },
+    {
+      id: 3,
+      type: "MenuItem",
+      label: "New Arrivals",
+      url: "/shop#new-arrivals",
+      children: [],
+    },
+    {
+      id: 4,
+      type: "MenuItem",
+      label: "Brands",
+      url: "/shop#brands",
+      children: [],
+    },
+  ];
 
   return (
     <nav className="sticky top-0 bg-white z-20">

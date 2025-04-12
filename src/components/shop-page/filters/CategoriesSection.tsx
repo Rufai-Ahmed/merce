@@ -1,14 +1,8 @@
 import { useGetCategoriesQuery } from "@/apis/category.api";
 import { Skeleton } from "@/components/ui/skeleton";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import React from "react";
 import { MdKeyboardArrowRight } from "react-icons/md";
-
-type Category = {
-  title: string;
-  slug: string;
-};
 
 interface CategoriesSectionProps {
   updateSearchParams: (params: {
@@ -22,7 +16,7 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
   const searchParams = useSearchParams();
   const selectedCategory = searchParams.get("category") || "";
   const { data: categories, isLoading } = useGetCategoriesQuery({
-    fields: ["name", "slug","id"],
+    fields: ["name", "slug", "id"],
   });
 
   if (isLoading && !categories) {
@@ -37,13 +31,15 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
   return (
     <div className="flex flex-col space-y-0.5 text-black/60">
       {(categories || []).map((category) => (
-       <button
-       key={category.id}
-       onClick={() => updateSearchParams({ category: category.id, page: 1 })}
-       className={`flex items-center justify-between py-2 ${
-         selectedCategory === category.id.toString() ? "text-black font-medium" : ""
-       }`}
-     >
+        <button
+          key={category.id}
+          onClick={() => updateSearchParams({ category: category.id, page: 1 })}
+          className={`flex items-center justify-between py-2 ${
+            selectedCategory === category.id.toString()
+              ? "text-black font-medium"
+              : ""
+          }`}
+        >
           {category.name} <MdKeyboardArrowRight />
         </button>
       ))}
