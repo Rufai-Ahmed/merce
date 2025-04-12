@@ -33,25 +33,37 @@ const data: NavMenu = [
     children: [
       {
         id: 11,
-        label: "Men's clothes",
+        label: "T-Shirts",
         url: "/shop#men-clothes",
         description: "In attractive and spectacular colors and designs",
       },
       {
         id: 12,
-        label: "Women's clothes",
+        label: "Hoodies & Sweatshirts",
         url: "/shop#women-clothes",
         description: "Ladies, your style and tastes are important to us",
       },
       {
         id: 13,
-        label: "Kids clothes",
+        label: "Caps & Beanies",
         url: "/shop#kids-clothes",
         description: "For all ages, with happy and beautiful colors",
       },
       {
         id: 14,
-        label: "Bags and Shoes",
+        label: "Jerseys",
+        url: "/shop#bag-shoes",
+        description: "Suitable for men, women and all tastes and styles",
+      },
+      {
+        id: 15,
+        label: "Tracksuits / Sets",
+        url: "/shop#bag-shoes",
+        description: "Suitable for men, women and all tastes and styles",
+      },
+      {
+        id: 16,
+        label: "Accessories",
         url: "/shop#bag-shoes",
         description: "Suitable for men, women and all tastes and styles",
       },
@@ -74,8 +86,22 @@ const data: NavMenu = [
   {
     id: 4,
     type: "MenuItem",
-    label: "Brands",
-    url: "/shop#brands",
+    label: "Vybz Gallery",
+    url: "/photos",
+    children: [],
+  },
+  {
+    id: 5,
+    type: "MenuItem",
+    label: "The Vybz Journal",
+    url: "/photos",
+    children: [],
+  },
+  {
+    id: 6,
+    type: "MenuItem",
+    label: "Contact",
+    url: "/photos",
     children: [],
   },
 ];

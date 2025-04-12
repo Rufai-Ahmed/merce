@@ -14,7 +14,7 @@ const NewsLetterSection = () => {
           "font-bold text-[32px] md:text-[40px] text-white mb-9 md:mb-0",
         ])}
       >
-        STAY UP TO DATE ABOUT OUR LATEST OFFERS
+        STAY UP TO DATE ABOUT OUR LATEST DROPS !
       </p>
       <div className="flex items-center">
         <div className="flex flex-col w-full max-w-[349px] mx-auto">
@@ -39,10 +39,10 @@ const NewsLetterSection = () => {
           <Button
             variant="secondary"
             className="text-sm sm:text-base font-medium bg-white h-12 rounded-full px-4 py-3"
-            aria-label="Subscribe to Newsletter"
+            aria-label="Join the Movement"
             type="button"
           >
-            Subscribe to Newsletter
+            Join the Movement
           </Button>
         </div>
       </div>
