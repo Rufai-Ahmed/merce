@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { integralCF } from "@/styles/fonts";
 import React from "react";
 import { PaymentBadge, SocialNetworks } from "./footer.types";
-import { FaFacebookF, FaGithub, FaInstagram, FaTwitter } from "react-icons/fa";
+import { FaInstagram, FaSnapchatGhost, FaWhatsapp } from "react-icons/fa";
 import Link from "next/link";
 import LinksSection from "./LinksSection";
 import Image from "next/image";
@@ -12,23 +12,18 @@ import LayoutSpacing from "./LayoutSpacing";
 const socialsData: SocialNetworks[] = [
   {
     id: 1,
-    icon: <FaTwitter />,
-    url: "https://twitter.com",
+    icon: <FaWhatsapp />,
+    url: "http://wa.me/2349078324596",
   },
   {
     id: 2,
-    icon: <FaFacebookF />,
-    url: "https://facebook.com",
+    icon: <FaSnapchatGhost />,
+    url: "https://www.snapchat.com/add/bigvybzallday?share_id=BMibIVpITimphf4x4s5IfA&locale=en_NG",
   },
   {
     id: 3,
     icon: <FaInstagram />,
-    url: "https://instagram.com",
-  },
-  {
-    id: 4,
-    icon: <FaGithub />,
-    url: "https://github.com/mohammadoftadeh",
+    url: "https://www.instagram.com/bigvybzallday/",
   },
 ];
 
