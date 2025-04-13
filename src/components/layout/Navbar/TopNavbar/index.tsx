@@ -70,11 +70,26 @@ const TopNavbar = () => {
       url: "/shop#new-arrivals",
       children: [],
     },
+
     {
       id: 4,
       type: "MenuItem",
-      label: "Brands",
-      url: "/shop#brands",
+      label: "Vybz Gallery",
+      url: "/photos",
+      children: [],
+    },
+    {
+      id: 5,
+      type: "MenuItem",
+      label: "The Vybz Journal",
+      url: "/photos",
+      children: [],
+    },
+    {
+      id: 6,
+      type: "MenuItem",
+      label: "Contact",
+      url: "/photos",
       children: [],
     },
   ];
