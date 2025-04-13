@@ -93,7 +93,7 @@ const TopNavbar = () => {
       children: [],
     },
     {
-      id: 6,
+      id: 7,
       type: "MenuItem",
       label: "About",
       url: "/about",
