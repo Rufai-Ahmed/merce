@@ -56,13 +56,13 @@ const TopNavbar = () => {
       type: "MenuList",
       children: shopChildren,
     },
-    {
-      id: 2,
-      type: "MenuItem",
-      label: "On Sale",
-      url: "/shop#on-sale",
-      children: [],
-    },
+    // {
+    //   id: 2,
+    //   type: "MenuItem",
+    //   label: "On Sale",
+    //   url: "/shop#on-sale",
+    //   children: [],
+    // },
     {
       id: 3,
       type: "MenuItem",
