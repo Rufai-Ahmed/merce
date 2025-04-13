@@ -92,6 +92,13 @@ const TopNavbar = () => {
       url: "/contact",
       children: [],
     },
+    {
+      id: 6,
+      type: "MenuItem",
+      label: "About",
+      url: "/about",
+      children: [],
+    },
   ];
 
   return (
