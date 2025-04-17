@@ -56,13 +56,13 @@ const TopNavbar = () => {
       type: "MenuList",
       children: shopChildren,
     },
-    {
-      id: 2,
-      type: "MenuItem",
-      label: "On Sale",
-      url: "/shop#on-sale",
-      children: [],
-    },
+    // {
+    //   id: 2,
+    //   type: "MenuItem",
+    //   label: "On Sale",
+    //   url: "/shop#on-sale",
+    //   children: [],
+    // },
     {
       id: 3,
       type: "MenuItem",
@@ -70,11 +70,33 @@ const TopNavbar = () => {
       url: "/shop#new-arrivals",
       children: [],
     },
+
     {
       id: 4,
       type: "MenuItem",
-      label: "Brands",
-      url: "/shop#brands",
+      label: "Vybz Gallery",
+      url: "/photos",
+      children: [],
+    },
+    {
+      id: 5,
+      type: "MenuItem",
+      label: "The Vybz Journal",
+      url: "/photos",
+      children: [],
+    },
+    {
+      id: 6,
+      type: "MenuItem",
+      label: "Contact",
+      url: "/contact",
+      children: [],
+    },
+    {
+      id: 7,
+      type: "MenuItem",
+      label: "About",
+      url: "/about",
       children: [],
     },
   ];
