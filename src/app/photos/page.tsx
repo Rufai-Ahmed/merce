@@ -40,9 +40,9 @@ const people = [
   },
   {
     id: 6,
-    name: "Bella Schmurda",
+    name: "Bella Shmurda",
     image: "/images/big.png",
-    description: "Bella Schmurda Rocking BigVybz",
+    description: "Bella Shmurda Rocking BigVybz",
   },
   // {
   //   id: 7,
