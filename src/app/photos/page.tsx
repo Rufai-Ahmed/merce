@@ -42,7 +42,7 @@ const people = [
   {
     id: 6,
     name: "Chisom",
-    image: "/images/femalegreen.jpg",
+    image: "/images/big.png",
     description: "Chisom Out Rocking BigVybz In Style",
   },
   // {
