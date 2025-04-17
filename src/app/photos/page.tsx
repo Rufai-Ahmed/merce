@@ -2,10 +2,9 @@
 
 import type React from "react";
 
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
-import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 // People wearing the brand with placeholder images
 const people = [
@@ -41,9 +40,9 @@ const people = [
   },
   {
     id: 6,
-    name: "Chisom",
+    name: "Bella Schmurda",
     image: "/images/big.png",
-    description: "Chisom Out Rocking BigVybz In Style",
+    description: "Bella Schmurda Rocking BigVybz",
   },
   // {
   //   id: 7,
