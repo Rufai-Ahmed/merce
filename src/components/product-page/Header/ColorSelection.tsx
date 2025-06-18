@@ -5,12 +5,31 @@ import { setColorSelection } from "@/lib/features/products/productsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { cn } from "@/lib/utils";
 import { IoMdCheckmark } from "react-icons/io";
-
 const colorMap: { [key: string]: string } = {
   Black: "bg-black",
   Brown: "bg-[#4F4631]",
   Grey: "bg-gray-500",
   White: "bg-white border border-gray-300",
+  Red: "bg-red-500",
+  Blue: "bg-blue-500",
+  Green: "bg-green-500",
+  Yellow: "bg-yellow-400",
+  Purple: "bg-purple-500",
+  Pink: "bg-pink-500",
+  Orange: "bg-orange-500",
+  Teal: "bg-teal-500",
+  Indigo: "bg-indigo-500",
+  Cyan: "bg-cyan-500",
+  Lime: "bg-lime-500",
+  Amber: "bg-amber-500",
+  Emerald: "bg-emerald-500",
+  Violet: "bg-violet-500",
+  Rose: "bg-rose-500",
+  Sky: "bg-sky-500",
+  Slate: "bg-slate-500",
+  Zinc: "bg-zinc-500",
+  Neutral: "bg-neutral-500",
+  Stone: "bg-stone-500",
 };
 
 const ColorSelection = ({ colors }: { colors: string[] }) => {
