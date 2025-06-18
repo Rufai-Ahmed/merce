@@ -45,7 +45,7 @@ const Reviews = () => {
 
   if (!isClient) return null;
 
-  const reviewList = reviews || [];
+  const reviewList = reviews?.data || [];
 
   return (
     <section className="overflow-hidden">
@@ -99,7 +99,7 @@ const Reviews = () => {
                   ))
               : reviewList.map((review, index) => (
                   <CarouselItem
-                    key={review.id}
+                    key={review._id}
                     className="w-full max-w-[358px] sm:max-w-[400px] pl-5"
                   >
                     <ReviewCard

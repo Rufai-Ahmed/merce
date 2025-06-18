@@ -1,17 +1,77 @@
 "use client";
 
-import React from "react";
-import { useParams, useRouter } from "next/navigation";
+import React, { useState, useEffect, useRef } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetOrderByIdQuery } from "@/apis/order.api";
+import {
+  useGetOrderByIdQuery,
+  useRegeneratePaymentUrlMutation,
+  useVerifyOrderPaymentMutation,
+} from "@/apis/order.api";
 
 export default function OrderConfirmationPage() {
   const { id } = useParams();
-  const orderId = parseInt(id as string, 10);
+  const orderId = id as string;
   const { data: order, isLoading, isError } = useGetOrderByIdQuery(orderId);
+  const [regeneratePaymentUrl, { isLoading: isGeneratingPayment }] =
+    useRegeneratePaymentUrlMutation();
+  const [verifyOrderPayment] = useVerifyOrderPaymentMutation();
+  const searchParams = useSearchParams();
+  const tx_ref = searchParams.get("tx_ref");
+  const transaction_id = searchParams.get("transaction_id");
+  const [paymentStatus, setPaymentStatus] = useState<
+    null | "success" | "failed" | "pending"
+  >(null);
+  const [verifying, setVerifying] = useState(false);
   const router = useRouter();
+  const hasVerified = useRef(false);
+
+  useEffect(() => {
+    if ((tx_ref || transaction_id) && !hasVerified.current) {
+      hasVerified.current = true;
+      setVerifying(true);
+      verifyOrderPayment({
+        tx_ref: tx_ref || undefined,
+        transaction_id: transaction_id || undefined,
+      })
+        .unwrap()
+        .then((res) => {
+          if (res.data?.data?.status === "successful")
+            setPaymentStatus("success");
+          else setPaymentStatus("failed");
+          // Remove query params after verification
+          router.replace(`/order-confirmation/${orderId}`);
+        })
+        .catch(() => {
+          setPaymentStatus("failed");
+          router.replace(`/order-confirmation/${orderId}`);
+        })
+        .finally(() => setVerifying(false));
+    }
+  }, [tx_ref, transaction_id, verifyOrderPayment, orderId, router]);
+
+  const handleMakePayment = async () => {
+    if (!order) return;
+
+    try {
+      // If order already has a payment URL, use it
+      if (order.payment_url) {
+        window.location.href = order.payment_url;
+        return;
+      }
+
+      // Otherwise, regenerate the payment URL
+      const result = await regeneratePaymentUrl(order.id).unwrap();
+      if (result.payment_url) {
+        window.location.href = result.payment_url;
+      }
+    } catch (error) {
+      console.error("Failed to generate payment URL:", error);
+      alert("Failed to generate payment URL. Please try again.");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -42,6 +102,27 @@ export default function OrderConfirmationPage() {
         <div className="border rounded-lg p-6">
           <h3 className="text-xl font-semibold">Thank you for your order!</h3>
           <p className="mt-2">Order #{order.id}</p>
+
+          {/* Payment Status */}
+          <div className="mt-4">
+            <h4 className="font-semibold">Payment Status:</h4>
+            {verifying ? (
+              <p className="font-medium text-blue-600">Verifying payment...</p>
+            ) : paymentStatus === "success" ? (
+              <p className="font-medium text-green-600">Payment Successful</p>
+            ) : paymentStatus === "failed" ? (
+              <p className="font-medium text-red-600">Payment Failed</p>
+            ) : (
+              <p
+                className={`font-medium ${
+                  order.needs_payment ? "text-red-600" : "text-green-600"
+                }`}
+              >
+                {order.needs_payment ? "Payment Required" : "Payment Completed"}
+              </p>
+            )}
+          </div>
+
           <div className="mt-4">
             <h4 className="font-semibold">Items:</h4>
             <ul className="list-disc pl-5">
@@ -71,6 +152,23 @@ export default function OrderConfirmationPage() {
             <h4 className="font-semibold">Total:</h4>
             <p>₦{parseFloat(order.total).toLocaleString()}</p>
           </div>
+
+          {/* Payment Button */}
+          {order.needs_payment && (
+            <div className="mt-6">
+              <Button
+                onClick={handleMakePayment}
+                disabled={isGeneratingPayment}
+                className="w-full bg-black text-white rounded-full py-4 mb-4"
+              >
+                {isGeneratingPayment ? "Generating Payment..." : "Make Payment"}
+              </Button>
+              <p className="text-sm text-gray-600 text-center">
+                Click the button above to complete your payment
+              </p>
+            </div>
+          )}
+
           <Button asChild className="mt-6">
             <Link href="/shop">Continue Shopping</Link>
           </Button>

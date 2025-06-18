@@ -16,7 +16,7 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
   const searchParams = useSearchParams();
   const selectedCategory = searchParams.get("category") || "";
   const { data: categories, isLoading } = useGetCategoriesQuery({
-    fields: ["name", "slug", "id"],
+    _fields: ["name", "slug", "id"],
   });
 
   if (isLoading && !categories) {

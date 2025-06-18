@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
 
 module.exports = {
   siteUrl: "https://bigvybz.com",

@@ -9,16 +9,19 @@ import { useGetCustomerByIdQuery } from "@/apis/customer.api";
 import { useGetOrdersQuery } from "@/apis/order.api";
 
 export default function ProfilePage() {
-  const { userId } = useAppSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
   const router = useRouter();
 
-  if (!userId) {
+  if (!user) {
     router.push("/login");
     return null;
   }
 
-  const { data: customer, isLoading: isCustomerLoading } = useGetCustomerByIdQuery(userId);
-  const { data: orders, isLoading: isOrdersLoading } = useGetOrdersQuery(userId);
+  const { data: customer, isLoading: isCustomerLoading } =
+    useGetCustomerByIdQuery(user.id);
+  const { data: orders, isLoading: isOrdersLoading } = useGetOrdersQuery({
+    customer: user.id,
+  });
 
   if (isCustomerLoading || isOrdersLoading) {
     return (
@@ -45,10 +48,17 @@ export default function ProfilePage() {
           transition={{ delay: 0.2, duration: 0.5 }}
           className="bg-white p-6 rounded-xl shadow-md mb-8"
         >
-          <h2 className="text-2xl font-semibold mb-4 text-gray-800">Personal Information</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+            Personal Information
+          </h2>
           <div className="space-y-2">
-            <p><strong>Name:</strong> {customer?.first_name} {customer?.last_name}</p>
-            <p><strong>Email:</strong> {customer?.email}</p>
+            <p>
+              <strong>Name:</strong> {customer?.first_name}{" "}
+              {customer?.last_name}
+            </p>
+            <p>
+              <strong>Email:</strong> {customer?.email}
+            </p>
           </div>
         </motion.div>
         <motion.div
@@ -57,7 +67,9 @@ export default function ProfilePage() {
           transition={{ delay: 0.4, duration: 0.5 }}
           className="bg-white p-6 rounded-xl shadow-md"
         >
-          <h2 className="text-2xl font-semibold mb-4 text-gray-800">Order History</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+            Order History
+          </h2>
           {orders && orders.length > 0 ? (
             <ul className="space-y-4">
               {orders.map((order, index) => (
@@ -68,10 +80,20 @@ export default function ProfilePage() {
                   transition={{ delay: 0.1 * index }}
                   className="border-b pb-4 last:border-b-0"
                 >
-                  <p><strong>Order #{order.id}</strong></p>
-                  <p><strong>Status:</strong> {order.status}</p>
-                  <p><strong>Total:</strong> ₦{parseFloat(order.total).toLocaleString()}</p>
-                  <p><strong>Date:</strong> {new Date(order.date_created).toLocaleDateString()}</p>
+                  <p>
+                    <strong>Order #{order.id}</strong>
+                  </p>
+                  <p>
+                    <strong>Status:</strong> {order.status}
+                  </p>
+                  <p>
+                    <strong>Total:</strong> ₦
+                    {parseFloat(order.total).toLocaleString()}
+                  </p>
+                  <p>
+                    <strong>Date:</strong>{" "}
+                    {new Date(order.date_created).toLocaleDateString()}
+                  </p>
                 </motion.li>
               ))}
             </ul>

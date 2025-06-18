@@ -47,26 +47,26 @@ const navigation = [
     href: "/admin/reviews",
     icon: Star,
   },
-  {
-    name: "Reports",
-    href: "/admin/reports",
-    icon: FileText,
-  },
-  {
-    name: "Email",
-    href: "/admin/email",
-    icon: Mail,
-  },
-  {
-    name: "System",
-    href: "/admin/system",
-    icon: Settings,
-  },
-  {
-    name: "Export",
-    href: "/admin/export",
-    icon: Download,
-  },
+  // {
+  //   name: "Reports",
+  //   href: "/admin/reports",
+  //   icon: FileText,
+  // },
+  // {
+  //   name: "Email",
+  //   href: "/admin/email",
+  //   icon: Mail,
+  // },
+  // {
+  //   name: "System",
+  //   href: "/admin/system",
+  //   icon: Settings,
+  // },
+  // {
+  //   name: "Export",
+  //   href: "/admin/export",
+  //   icon: Download,
+  // },
 ];
 
 export function Sidebar() {

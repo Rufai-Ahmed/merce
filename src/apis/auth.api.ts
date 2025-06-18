@@ -23,7 +23,8 @@ export interface Order {
   date_created: string;
 }
 
-const BASE_URL = "http://localhost:5000/api/woocommerce";
+const BASE_URL =
+  process.env.NEXT_PUBLIC_BASE_URL_AUTH || "http://localhost:5000/api/woocommerce";
 
 export const authApi = createApi({
   reducerPath: "authApi",

@@ -61,7 +61,14 @@ const ResTopNavbar = ({ data }: { data: NavMenu }) => {
               {item.type === "MenuList" && (
                 <div className="mb-4 w-full">
                   <Accordion type="single" collapsible>
-                    <AccordionItem value={item.label} className="border-none">
+                    <AccordionItem
+                      value={
+                        typeof item.label === "string"
+                          ? item.label
+                          : `${item.url}`
+                      }
+                      className="border-none"
+                    >
                       <AccordionTrigger className="text-left p-0 py-0.5 font-normal text-base">
                         {item.label}
                       </AccordionTrigger>

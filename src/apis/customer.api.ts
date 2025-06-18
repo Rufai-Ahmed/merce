@@ -2,11 +2,10 @@
 import { baseApi, } from "./base.api";
 
 export interface Customer {
-  id: number;
+  id: string;
   email: string;
   first_name: string;
   last_name: string;
-  // ... add any additional customer fields as required
 }
 
 export const customersApi = baseApi.injectEndpoints({
@@ -16,7 +15,7 @@ export const customersApi = baseApi.injectEndpoints({
         url: "customers",
       }),
     }),
-    getCustomerById: builder.query<Customer, number>({
+    getCustomerById: builder.query<Customer, string>({
       query: (id) => ({
         url: `customers/${id}`,
       }),

@@ -193,6 +193,32 @@ export const orderApi = baseApi.injectEndpoints({
       query: () => "shipping_methods",
       providesTags: ["ShippingMethods"],
     }),
+
+    regeneratePaymentUrl: builder.mutation<
+      { status: string; payment_url: string; message: string },
+      string
+    >({
+      query: (orderId) => ({
+        url: `orders/${orderId}/regenerate-payment`,
+        method: "POST",
+      }),
+      invalidatesTags: (result, error, orderId) => [
+        { type: "Orders", id: orderId },
+        "Orders",
+      ],
+    }),
+
+    verifyOrderPayment: builder.mutation<
+      { status: string; data: any },
+      { tx_ref?: string; transaction_id?: string }
+    >({
+      query: (body) => ({
+        url: "orders/verify-payment",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Orders"],
+    }),
   }),
 });
 
@@ -202,4 +228,6 @@ export const {
   useCreateOrderMutation,
   useUpdateOrderMutation,
   useGetShippingMethodsQuery,
+  useRegeneratePaymentUrlMutation,
+  useVerifyOrderPaymentMutation,
 } = orderApi;

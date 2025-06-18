@@ -234,7 +234,7 @@ export default function CheckoutPage() {
                   />
                 </div>
               </div>
-              <div>
+              {/* <div>
                 <Label htmlFor="shippingMethod">Shipping Method</Label>
                 {isShippingLoading ? (
                   <Skeleton className="h-10 w-full" />
@@ -256,7 +256,7 @@ export default function CheckoutPage() {
                     </SelectContent>
                   </Select>
                 )}
-              </div>
+              </div> */}
             </form>
           </div>
           <div className="w-full lg:w-1/3">
@@ -285,7 +285,7 @@ export default function CheckoutPage() {
                 disabled={
                   !formData.firstName ||
                   !formData.email ||
-                  !formData.shippingMethod ||
+                 
                   isOrderLoading
                 }
               >
