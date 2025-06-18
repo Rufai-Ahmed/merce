@@ -2,8 +2,9 @@ import { RootState } from "@/lib/store";
 import { createApi, fetchBaseQuery, retry } from "@reduxjs/toolkit/query/react";
 import { logout } from "@/lib/features/auth/auth.slice";
 
-export const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000/api/woocommerce/wc/v3";
+export const BASE_URL = `${
+  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000"
+}/api/woocommerce/wc/v3`;
 
 export const staggeredBaseQuery = retry(
   async (args, api, extraOptions) => {
