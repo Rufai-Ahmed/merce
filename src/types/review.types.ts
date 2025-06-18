@@ -1,7 +1,20 @@
 export type Review = {
-  id: number;
-  user: string;
-  content: string;
+  _id: string;
+  product: string;
+  reviewer: string;
+  reviewer_email: string;
+  review: string;
   rating: number;
-  date: string;
+  status: "approved" | "pending" | "spam" | "trash";
+  reviewer_avatar_urls?: {
+    [key: string]: string;
+  };
+  verified: boolean;
+  meta_data?: Array<{
+    key: string;
+    value: any;
+  }>;
+
+  createdAt: Date;
+  updatedAt: Date;
 };

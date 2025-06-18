@@ -22,7 +22,7 @@ const ReviewCard = ({
   data,
   className,
 }: ReviewCardProps) => {
-  const formattedDate = format(new Date(data.date), "MMMM d, yyyy");
+  const formattedDate = format(new Date(data.createdAt), "MMMM d, yyyy");
 
   return (
     <div
@@ -47,10 +47,10 @@ const ReviewCard = ({
         )}
       </div>
       <div className="flex items-center mb-2 sm:mb-3">
-        <strong className="text-black sm:text-xl mr-1">{data.user}</strong>
+        <strong className="text-black sm:text-xl mr-1">{data.reviewer}</strong>
         <IoIosCheckmarkCircle className="text-[#01AB31] text-xl sm:text-2xl" />
       </div>
-      <p className="text-sm sm:text-base text-black/60" dangerouslySetInnerHTML={{__html: data.content}}></p>
+      <p className="text-sm sm:text-base text-black/60" dangerouslySetInnerHTML={{__html: data.review}}></p>
       {isDate && (
         <p className="text-black/60 text-sm font-medium mt-4 sm:mt-6">
           Posted on {formattedDate}

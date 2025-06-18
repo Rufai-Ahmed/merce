@@ -1,5 +1,5 @@
+import ReviewCard from "@/components/common/ReviewCard";
 import { Button } from "@/components/ui/button";
-import React from "react";
 import {
   Select,
   SelectContent,
@@ -7,13 +7,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import ReviewCard from "@/components/common/ReviewCard";
-import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Review } from "@/types/review.types";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import WriteReviewForm from "@/components/WriteReviewForm";
+
 interface ReviewsContentProps {
-  reviewsData: any[];
+  reviewsData: Review[];
   isLoading: boolean;
-  productId: number;
+  productId: string;
 }
 
 const ReviewsContent = ({
@@ -57,26 +66,31 @@ const ReviewsContent = ({
             </SelectContent>
           </Select>
 
-          <Button
-            type="button"
-            className="sm:min-w-[166px] px-4 py-3 sm:px-5 sm:py-4 rounded-full bg-black font-medium text-xs sm:text-base h-12"
-          >
-            Write a Review
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                type="button"
+                className="sm:min-w-[166px] px-4 py-3 sm:px-5 sm:py-4 rounded-full bg-black font-medium text-xs sm:text-base h-12"
+              >
+                Write a Review
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Write a Review</DialogTitle>
+                <DialogDescription>Share your thoughts about this product.</DialogDescription>
+              </DialogHeader>
+              <WriteReviewForm productId={productId} />
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5 sm:mb-9">
         {reviewsData.length > 0 ? (
           reviewsData.map((review) => (
             <ReviewCard
-              key={review.id}
-              data={{
-                id: review.id,
-                user: review.reviewer,
-                rating: review.rating,
-                content: review.review,
-                date: review.date_created,
-              }}
+              key={review._id}
+              data={review}
               isAction
               isDate
             />

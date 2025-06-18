@@ -63,7 +63,7 @@ const Tabs = ({ product, reviewsData, isReviewsLoading }: TabsProps) => {
           <ReviewsContent
             reviewsData={reviewsData}
             isLoading={isReviewsLoading}
-            productId={product.id}
+            productId={product._id}
           />
         )}{" "}
         {active === 3 && <FaqContent />}

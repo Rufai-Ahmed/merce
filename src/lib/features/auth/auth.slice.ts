@@ -1,26 +1,27 @@
+import { User } from "@/apis/admin.api";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface AuthState {
   token: string | null;
-  userId: number | null;
+  user: User | null;
 }
 
 const initialState: AuthState = {
   token: null,
-  userId: null,
+  user: null,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setAuth: (state, action: PayloadAction<{ token: string; userId: number }>) => {
+    setAuth: (state, action: PayloadAction<{ token: string; user: User }>) => {
       state.token = action.payload.token;
-      state.userId = action.payload.userId;
+      state.user = action.payload.user;
     },
     logout: (state) => {
       state.token = null;
-      state.userId = null;
+      state.user = null;
     },
   },
 });

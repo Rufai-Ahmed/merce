@@ -22,166 +22,67 @@ export const productsApi = baseApi.injectEndpoints({
               "images",
               "average_rating",
               "related_ids",
+              "stock_quantity",
+              "status",
+              "type",
             ]
           ).join(","),
         },
       }),
-      transformResponse: (
-        response: any[],
-        meta
-      ): PaginatedResponse<Product> => {
-        const total = meta?.response?.headers.get("X-WP-Total");
-        const totalPages = meta?.response?.headers.get("X-WP-TotalPages");
-        const products: Product[] = response.map((item) => {
-          const regularPrice = parseFloat(item.regular_price || "0");
-          const salePrice = item.sale_price
-            ? parseFloat(item.sale_price)
-            : null;
-          const price =
-            salePrice || regularPrice || parseFloat(item.price || "0");
-          const discountPercentage =
-            salePrice && regularPrice > salePrice
-              ? Math.round(((regularPrice - salePrice) / regularPrice) * 100)
-              : 0;
-          return {
-            id: item.id,
-            title: item.name,
-            srcUrl: item.images?.[0]?.src || "",
-            gallery: item.images?.map((img: any) => img.src) || [],
-            images: item.images || [],
-            price: price,
-            discount: {
-              amount:
-                salePrice && regularPrice > salePrice
-                  ? regularPrice - salePrice
-                  : 0,
-              percentage: discountPercentage,
-            },
-            rating: parseFloat(item.average_rating || "0"),
-            relatedIds: item.related_ids || [],
-            attributes: [],
-            variations: [],
-          } as Product;
-        });
-        return {
-          data: products,
-          total: total ? parseInt(total, 10) : 0,
-          totalPages: totalPages ? parseInt(totalPages, 10) : 0,
-        };
-      },
+
       providesTags: (result) =>
         result
           ? [
-              ...result.data.map(({ id }) => ({
+              ...result.data.map(({ _id }) => ({
                 type: "Products" as const,
-                id,
+                id: _id,
               })),
               { type: "Products", id: "LIST" },
             ]
           : [{ type: "Products", id: "LIST" }],
     }),
 
-    getProductById: builder.query<Product, number>({
-      async queryFn(id, _queryApi, _extraOptions, fetchWithBaseQuery) {
-        const productFields = [
-          "id",
-          "name",
-          "price",
-          "regular_price",
-          "sale_price",
-          "images",
-          "description",
-          "short_description",
-          "average_rating",
-          "related_ids",
-          "type",
-          "variations",
-          "attributes",
-        ];
-
-        const productResult = await fetchWithBaseQuery({
-          url: `products/${id}`,
-          params: {
-            _fields: productFields.join(","),
-          },
-        });
-        if (productResult.error) return { error: productResult.error };
-
-        const productData = productResult.data as any;
-
-        // Fetch variations if it's a variable product
-        let variations: any[] = [];
-        if (
-          productData.type === "variable" &&
-          productData.variations.length > 0
-        ) {
-          const variationFields = ["id", "price", "attributes"];
-          const variationsResult = await fetchWithBaseQuery({
-            url: `products/${id}/variations`,
-            params: {
-              per_page: 100,
-              _fields: variationFields.join(","),
-            },
-          });
-          if (!variationsResult.error)
-            variations = variationsResult.data as any[];
-        }
-
-        const regularPrice = parseFloat(productData.regular_price || "0");
-        const salePrice = productData.sale_price
-          ? parseFloat(productData.sale_price)
-          : null;
-        const price =
-          salePrice || regularPrice || parseFloat(productData.price || "0");
-        const discountPercentage =
-          salePrice && regularPrice > salePrice
-            ? Math.round(((regularPrice - salePrice) / regularPrice) * 100)
-            : 0;
-
-        const transformedProduct: Product = {
-          id: productData.id,
-          title: productData.name,
-          srcUrl: productData.images?.[0]?.src || "",
-          description: productData.description,
-          short_description: productData.short_description,
-          gallery: productData.images?.map((img: any) => img.src) || [],
-          price: price,
-          discount: {
-            amount:
-              salePrice && regularPrice > salePrice
-                ? regularPrice - salePrice
-                : 0,
-            percentage: discountPercentage,
-          },
-          rating: parseFloat(productData.average_rating || "0"),
-          relatedIds: productData.related_ids || [],
-          attributes: productData.attributes.map((attr: any) => ({
-            id: attr.id,
-            name: attr.name,
-            slug: attr.slug,
-            options: attr.options,
-            variation: attr.variation,
-          })),
-          variations: variations.map((varItem: any) => ({
-            id: varItem.id,
-            price: parseFloat(varItem.price || "0"),
-            attributes: varItem.attributes.reduce(
-              (acc: { [key: string]: string }, attr: any) => {
-                acc[attr.name] = attr.option;
-                return acc;
-              },
-              {}
-            ),
-          })),
-        };
-
-        return { data: transformedProduct };
-      },
+    getProductById: builder.query<Product, string>({
+      query: (id) => ({
+        url: `products/${id}`,
+        params: {
+          _fields: [
+            "id",
+            "name",
+            "description",
+            "short_description",
+            "price",
+            "regular_price",
+            "sale_price",
+            "images",
+            "category",
+            "brand",
+            "stock_quantity",
+            "manage_stock",
+            "in_stock",
+            "type",
+            "status",
+            "featured",
+            "virtual",
+            "downloadable",
+            "average_rating",
+            "rating_count",
+            "attributes",
+            "variations",
+            "variation_options",
+            "related_ids",
+            "cross_sell_ids",
+            "upsell_ids",
+            "date_created",
+            "date_modified",
+          ].join(","),
+        },
+      }),
       providesTags: (result) =>
-        result ? [{ type: "Products", id: result.id }] : [],
+        result ? [{ type: "Products", id: result._id }] : [],
     }),
 
-    createProduct: builder.mutation<Product, Partial<Product>>({
+    createProduct: builder.mutation<Product, Partial<Product> | FormData>({
       query: (body) => ({
         url: "products",
         method: "POST",
@@ -189,27 +90,34 @@ export const productsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: "Products", id: "LIST" }],
     }),
+
     updateProduct: builder.mutation<
       Product,
-      { id: number; data: Partial<Product> }
+      { id: string; data: FormData | Partial<Product> }
     >({
       query: ({ id, data }) => ({
         url: `products/${id}`,
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: (_result, _error, { id }) => [{ type: "Products", id }],
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: "Products", id: id.toString() },
+        { type: "Products", id: "LIST" },
+      ],
     }),
+
     deleteProduct: builder.mutation<
       { deleted: boolean; previous: Product },
-      number
+      string
     >({
       query: (id) => ({
         url: `products/${id}`,
         method: "DELETE",
         params: { force: true },
       }),
-      invalidatesTags: (_result, _error, id) => [{ type: "Products", id }],
+      invalidatesTags: (_result, _error, id) => [
+        { type: "Products", id: id.toString() },
+      ],
     }),
 
     getAttributes: builder.query<any[], void>({
@@ -224,6 +132,7 @@ export const productsApi = baseApi.injectEndpoints({
         })),
       providesTags: [{ type: "Attributes", id: "LIST" }],
     }),
+
     getAttributeTerms: builder.query<any[], number>({
       query: (attributeId) => ({
         url: `products/attributes/${attributeId}/terms`,
@@ -239,9 +148,10 @@ export const productsApi = baseApi.injectEndpoints({
         { type: "AttributeTerms", id: attributeId },
       ],
     }),
+
     getProductReviews: builder.query<
       PaginatedResponse<any>,
-      { productId: number; per_page?: number; page?: number }
+      { productId: string; per_page?: number; page?: number }
     >({
       query: ({ productId, per_page = 10, page = 1 }) => ({
         url: `products/reviews`,
@@ -251,22 +161,7 @@ export const productsApi = baseApi.injectEndpoints({
           page,
         },
       }),
-      transformResponse: (response: any[], meta): PaginatedResponse<any> => {
-        const total = meta?.response?.headers.get("X-WP-Total");
-        const totalPages = meta?.response?.headers.get("X-WP-TotalPages");
-        return {
-          data: response.map((review) => ({
-            id: review.id,
-            reviewer: review.reviewer,
-            reviewer_email: review.reviewer_email,
-            review: review.review,
-            rating: review.rating,
-            date_created: review.date_created,
-          })),
-          total: total ? parseInt(total, 10) : 0,
-          totalPages: totalPages ? parseInt(totalPages, 10) : 0,
-        };
-      },
+
       providesTags: (result, _error, { productId }) =>
         result
           ? [

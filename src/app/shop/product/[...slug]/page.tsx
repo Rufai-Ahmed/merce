@@ -1,11 +1,12 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProductPageClient from "./product-client-page";
+import { Product } from "@/types/product.types";
 
 type Slug = {
   slug: string[];
 };
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
 
 export async function generateMetadata({
   params,
@@ -13,19 +14,12 @@ export async function generateMetadata({
   params: Promise<Slug>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const productId = parseInt(slug[0], 10);
-  if (isNaN(productId)) {
-    return {
-      title: "Product Not Found | BigVybz",
-      description: "This product could not be found.",
-    };
-  }
+  const productId = slug[0];
 
   const response = await fetch(
     `${baseUrl}/api/woocommerce/wc/v3/products/${productId}`
   );
   const product = await response.json();
-
   if (!product || response.status !== 200) {
     return {
       title: "Product Not Found | BigVybz",
@@ -56,16 +50,12 @@ export default async function ProductPage({
 }) {
   const { slug } = await params;
 
-  const productId = parseInt(slug[0], 10);
-  if (isNaN(productId)) {
-    notFound();
-  }
+  const productId = slug[0];
 
   const response = await fetch(
     `${baseUrl}/api/woocommerce/wc/v3/products/${productId}`
   );
   const product = await response.json();
-
   if (!product || response.status !== 200) {
     notFound();
   }
@@ -78,7 +68,7 @@ export default async function ProductPage({
   );
 }
 
-const StructuredData = ({ product }: { product: any }) => (
+const StructuredData = ({ product }: { product: Product }) => (
   <script
     type="application/ld+json"
     dangerouslySetInnerHTML={{
@@ -86,7 +76,7 @@ const StructuredData = ({ product }: { product: any }) => (
         "@context": "https://schema.org/",
         "@type": "Product",
         name: product.name,
-        image: product.srcUrl,
+        image: product.images?.[0]?.src,
         description: product.description || "No description available",
         offers: {
           "@type": "Offer",

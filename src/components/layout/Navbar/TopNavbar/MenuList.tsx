@@ -12,7 +12,7 @@ import { MenuListData } from "../navbar.types";
 
 export type MenuListProps = {
   data: MenuListData;
-  label: string;
+  label: string | React.ReactNode;
 };
 
 export function MenuList({ data, label }: MenuListProps) {
@@ -24,7 +24,11 @@ export function MenuList({ data, label }: MenuListProps) {
       <NavigationMenuContent>
         <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
           {data.map((item) => (
-            <ListItem key={item.id} title={item.label} href={item.url ?? "/"}>
+            <ListItem 
+              key={item.id} 
+              title={typeof item.label === 'string' ? item.label : ''} 
+              href={item.url ?? "/"}
+            >
               {item.description ?? ""}
             </ListItem>
           ))}
@@ -35,7 +39,9 @@ export function MenuList({ data, label }: MenuListProps) {
 }
 
 const ListItem = React.forwardRef<
-  React.ElementRef<typeof Link>,
+  React.ElementRef<typeof Link> & {
+    title: string;
+  },
   React.ComponentPropsWithoutRef<typeof Link>
 >(({ className, title, children, ...props }, ref) => {
   return (

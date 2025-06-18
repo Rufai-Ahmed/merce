@@ -43,7 +43,7 @@ const ColorsSection: React.FC<ColorsSectionProps> = ({
   const { data: attributes, isLoading: isAttributesLoading } =
     useGetAttributesQuery();
   const selectedColor = searchParams.get("color") || "";
-  const colorAttribute = attributes?.find((attr) => attr.slug === "pa_color");
+  const colorAttribute = attributes?.find((attr) => attr.slug === "color");
   const { data: colorTerms, isLoading: isTermsLoading } =
     useGetAttributeTermsQuery(colorAttribute?.id || 0, {
       skip: !colorAttribute,

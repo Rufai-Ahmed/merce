@@ -6,7 +6,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { integralCF } from "@/styles/fonts";
 import { motion } from "framer-motion";
-import { useAppSelector } from "@/lib/hooks/redux";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -25,13 +25,18 @@ import {
 import { useGetCategoriesQuery } from "@/apis/category.api";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { NavMenu } from "../navbar.types";
+import { logout } from "@/lib/features/auth/auth.slice";
 
 const TopNavbar = () => {
-  const { token } = useAppSelector((state) => state.auth);
-
+  const { token, user } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const { data: categories, isLoading } = useGetCategoriesQuery({
-    fields: ["name", "slug", "id"],
+    _fields: ["name", "slug", "id"],
   });
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
 
   const shopChildren = isLoading
     ? [
@@ -81,7 +86,7 @@ const TopNavbar = () => {
     {
       id: 5,
       type: "MenuItem",
-      label: "The Vybz Journal",
+      label: "The Vybz Journal",
       url: "/photos",
       children: [],
     },
@@ -183,6 +188,13 @@ const TopNavbar = () => {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-48">
+                {user?.role?.includes("admin") && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin" className="w-full">
+                      Admin Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem asChild>
                   <Link href="/profile" className="w-full">
                     Profile
@@ -192,6 +204,9 @@ const TopNavbar = () => {
                   <Link href="/orders" className="w-full">
                     Orders
                   </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
+                  Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

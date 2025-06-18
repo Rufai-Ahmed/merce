@@ -21,6 +21,11 @@ const Header = ({ data }: { data: Product }) => {
     (state) => state.products
   );
 
+  const discount = data.sale_price ? {
+    percentage: Math.round(((data.regular_price - data.sale_price) / data.regular_price) * 100),
+    amount: data.regular_price - data.sale_price
+  } : { percentage: 0, amount: 0 };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
       <div>
@@ -33,11 +38,11 @@ const Header = ({ data }: { data: Product }) => {
             "text-2xl md:text-[40px] md:leading-[40px] mb-3 md:mb-3.5 capitalize",
           ])}
         >
-          {data.title}
+          {data.name}
         </h1>
         <div className="flex items-center mb-3 sm:mb-3.5">
           <Rating
-            initialValue={data.rating}
+            initialValue={data.average_rating}
             allowFraction
             SVGclassName="inline-block"
             emptyClassName="fill-gray-50"
@@ -45,44 +50,42 @@ const Header = ({ data }: { data: Product }) => {
             readonly
           />
           <span className="text-black text-xs sm:text-sm ml-[11px] sm:ml-[13px] pb-0.5 sm:pb-0">
-            {data.rating.toFixed(1)}
+            {data.average_rating.toFixed(1)}
             <span className="text-black/60">/5</span>
           </span>
         </div>
         <div className="flex items-center space-x-2.5 sm:space-x-3 mb-5">
-          {data.discount.percentage > 0 ? (
+          {discount.percentage > 0 ? (
             <span className="font-bold text-black text-2xl sm:text-[32px]">
-              {`₦${Math.round(
-                data.price - (data.price * data.discount.percentage) / 100
-              )}`}
+              {`₦${Math.round(data.sale_price || 0)}`}
             </span>
-          ) : data.discount.amount > 0 ? (
+          ) : discount.amount > 0 ? (
             <span className="font-bold text-black text-2xl sm:text-[32px]">
-              {`₦${data.price - data.discount.amount}`}
+              {`₦${data.sale_price}`}
             </span>
           ) : (
             <span className="font-bold text-black text-2xl sm:text-[32px]">
-              ₦{data.price}
+              ₦{data.regular_price}
             </span>
           )}
-          {data.discount.percentage > 0 && (
+          {discount.percentage > 0 && (
             <span className="font-bold text-black/40 line-through text-2xl sm:text-[32px]">
-              ₦{data.price}
+              ₦{data.regular_price}
             </span>
           )}
-          {data.discount.amount > 0 && (
+          {discount.amount > 0 && (
             <span className="font-bold text-black/40 line-through text-2xl sm:text-[32px]">
-              ₦{data.price}
+              ₦{data.regular_price}
             </span>
           )}
-          {data.discount.percentage > 0 ? (
+          {discount.percentage > 0 ? (
             <span className="font-medium text-[10px] sm:text-xs py-1.5 px-3.5 rounded-full bg-[#FF3333]/10 text-[#FF3333]">
-              {`-${data.discount.percentage}%`}
+              {`-${discount.percentage}%`}
             </span>
           ) : (
-            data.discount.amount > 0 && (
+            discount.amount > 0 && (
               <span className="font-medium text-[10px] sm:text-xs py-1.5 px-3.5 rounded-full bg-[#FF3333]/10 text-[#FF3333]">
-                {`-₦${data.discount.amount}`}
+                {`-₦${discount.amount}`}
               </span>
             )
           )}

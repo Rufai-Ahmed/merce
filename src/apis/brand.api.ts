@@ -12,12 +12,6 @@ export const brandsApi = baseApi.injectEndpoints({
           ...(fields && { _fields: fields.join(",") }),
         },
       }),
-      transformResponse: (response: any[]) => {
-        return response.map((item) => ({
-          id: item.slug,
-          srcUrl: item.image?.src || `/icons/${item.slug}-logo.svg`,
-        }));
-      },
     }),
   }),
   overrideExisting: false,

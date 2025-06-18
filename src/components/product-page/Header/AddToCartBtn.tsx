@@ -4,6 +4,7 @@ import { addToCart, CartItem } from "@/lib/features/carts/cartsSlice";
 import { emptySelection } from "@/lib/features/products/productsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { Product } from "@/types/product.types";
+import { toast } from "sonner";
 
 const AddToCartBtn = ({
   data,
@@ -19,8 +20,8 @@ const AddToCartBtn = ({
 
   const handleAddToCart = () => {
     const matchingVariation = data.variations?.find((variation) => {
-      const sizeAttr = variation.attributes["pa_size"] || "";
-      const colorAttr = variation.attributes["pa_color"] || "";
+      const sizeAttr = variation.attributes["size"] || "";
+      const colorAttr = variation.attributes["color"] || "";
       return (
         sizeAttr.toLowerCase() === sizeSelection?.toLowerCase() &&
         colorAttr.toLowerCase() === colorSelection?.name.toLowerCase()
@@ -28,34 +29,13 @@ const AddToCartBtn = ({
     });
 
     const cartItem: CartItem = {
-      id: data.id,
-      title: data.title,
-      srcUrl: data.srcUrl,
-      price: matchingVariation ? matchingVariation.price : data.price,
-      discount: data.discount,
-      rating: data.rating,
-      attributes: [
-        {
-          id: 1,
-          name: "Size",
-          slug: "pa_size",
-          options: [sizeSelection || ""],
-          variation: true,
-        },
-        {
-          id: 2,
-          name: "Color",
-          slug: "pa_color",
-          options: [colorSelection?.name || ""],
-          variation: true,
-        },
-      ],
-      variations: matchingVariation ? [matchingVariation] : data.variations,
+      ...data,
       quantity: data.quantity,
     };
 
     dispatch(addToCart(cartItem));
     dispatch(emptySelection());
+    toast.success("Item added to cart!");
   };
 
   return (

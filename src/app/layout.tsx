@@ -6,8 +6,7 @@ import "@/styles/globals.css";
 import HolyLoader from "holy-loader";
 import type { Viewport } from "next";
 import Providers from "./providers";
-
-
+import { Toaster } from "@/components/ui/sonner";
 
 export const viewport: Viewport = {
   themeColor: "#000000",
@@ -21,7 +20,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={satoshi.className}>
-        <HolyLoader color="#868686" />
+        `<HolyLoader color="#868686" />
+        <Toaster />
         <TopBanner />
         <Providers>
           <TopNavbar />

@@ -1,9 +1,9 @@
 import React from "react";
 
 export type MenuItem = {
-  id: number;
+  id: number | string;
   type: "MenuItem" | "MenuList";
-  label: string;
+  label: string | React.ReactNode;
   url?: string;
   children:
     | (Omit<MenuItem, "children" | "type"> & {

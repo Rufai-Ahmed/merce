@@ -10,15 +10,19 @@ import { useGetOrdersQuery } from "@/apis/order.api";
 import { cn } from "@/lib/utils";
 
 const OrdersPage = () => {
-  const { userId } = useAppSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
   const router = useRouter();
 
-  if (!userId) {
+  if (!user) {
     router.push("/login");
     return null;
   }
 
-  const { data: orders, isLoading, isError } = useGetOrdersQuery(userId);
+  const {
+    data: orders,
+    isLoading,
+    isError,
+  } = useGetOrdersQuery({ customer: user.id });
 
   if (isLoading) {
     return (

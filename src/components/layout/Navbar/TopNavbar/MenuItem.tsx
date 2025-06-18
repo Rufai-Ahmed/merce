@@ -8,20 +8,21 @@ import {
 import { cn } from "@/lib/utils";
 
 type MenuItemProps = {
-  label: string;
+  label: string | React.ReactNode;
   url?: string;
 };
 
 export function MenuItem({ label, url }: MenuItemProps) {
   return (
     <NavigationMenuItem>
-      <Link href={url ?? "/"} legacyBehavior passHref>
-        <NavigationMenuLink
+      <NavigationMenuLink asChild>
+        <Link
+          href={url ?? "/"}
           className={cn([navigationMenuTriggerStyle(), "font-normal px-3"])}
         >
           {label}
-        </NavigationMenuLink>
-      </Link>
+        </Link>
+      </NavigationMenuLink>
     </NavigationMenuItem>
   );
 }

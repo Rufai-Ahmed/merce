@@ -1,38 +1,152 @@
 import { baseApi } from "./base.api";
 
+interface GetCategoriesParams {
+  page?: number;
+  per_page?: number;
+  search?: string;
+  parent?: string;
+  _fields?: string[];
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  parent: string | number;
+  description: string;
+  display: string;
+  image?: {
+    id: string;
+    date_created: string;
+    date_modified: string;
+    src: string;
+    name: string;
+    alt: string;
+  };
+  menu_order: number;
+  count: number;
+  _links?: {
+    self: Array<{ href: string }>;
+    collection: Array<{ href: string }>;
+  };
+}
+
 export const categoryApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getCategories: builder.query<
-      any[],
-      { perPage?: number; fields?: string[] }
-    >({
-      query: ({ perPage = 10, fields }) => ({
+    getCategories: builder.query<Category[], GetCategoriesParams>({
+      query: ({ page = 1, per_page = 10, search, parent, _fields }) => ({
         url: "products/categories",
-        method: "GET",
         params: {
-          //   per_page: perPage,
-          ...(fields && { _fields: fields.join(",") }),
+          page,
+          per_page,
+          search,
+          parent,
+          ...(_fields && { _fields: _fields.join(",") }),
         },
-        invalidatesTags: ["Categories"],
       }),
+      providesTags: ["Categories"],
     }),
-    getCategoryById: builder.query<
-      { id: number; name: string; slug: string },
-      number
+
+    getCategoryById: builder.query<Category, string>({
+      query: (categoryId) => `products/categories/${categoryId}`,
+      providesTags: (result, error, id) => [{ type: "Categories", id }],
+    }),
+
+    createCategory: builder.mutation<
+      Category,
+      {
+        name: string;
+        slug?: string;
+        description?: string;
+        parent?: string;
+        image?: File;
+      }
     >({
-      query: (categoryId) => ({
-        url: `products/categories/${categoryId}`,
-        params: { _fields: ["id", "name", "slug"].join(",") },
+      query: (categoryData) => {
+        const formData = new FormData();
+        formData.append("name", categoryData.name);
+        if (categoryData.slug) formData.append("slug", categoryData.slug);
+        if (categoryData.description)
+          formData.append("description", categoryData.description);
+        if (categoryData.parent) formData.append("parent", categoryData.parent);
+        if (categoryData.image) formData.append("image", categoryData.image);
+
+        return {
+          url: "products/categories",
+          method: "POST",
+          body: formData,
+        };
+      },
+      invalidatesTags: ["Categories"],
+    }),
+
+    updateCategory: builder.mutation<
+      Category,
+      {
+        id: string;
+        data: {
+          name?: string;
+          slug?: string;
+          description?: string;
+          parent?: string;
+          image?: File;
+        };
+      }
+    >({
+      query: ({ id, data }) => {
+        const formData = new FormData();
+        if (data.name) formData.append("name", data.name);
+        if (data.slug) formData.append("slug", data.slug);
+        if (data.description !== undefined)
+          formData.append("description", data.description);
+        if (data.parent !== undefined) formData.append("parent", data.parent);
+        if (data.image) formData.append("image", data.image);
+
+        return {
+          url: `products/categories/${id}`,
+          method: "PUT",
+          body: formData,
+        };
+      },
+      invalidatesTags: (result, error, { id }) => [
+        { type: "Categories", id },
+        "Categories",
+      ],
+    }),
+
+    deleteCategory: builder.mutation<
+      { deleted: boolean; previous: Category },
+      string
+    >({
+      query: (id) => ({
+        url: `products/categories/${id}`,
+        method: "DELETE",
       }),
-      transformResponse: (response: any) => ({
-        id: response.id,
-        name: response.name,
-        slug: response.slug,
+      invalidatesTags: (result, error, id) => [
+        { type: "Categories", id },
+        "Categories",
+      ],
+    }),
+
+    bulkUpdateCategories: builder.mutation<
+      { status: string; message: string; affected_count: number },
+      { ids: string[]; action: "delete" }
+    >({
+      query: ({ ids, action }) => ({
+        url: "products/categories/bulk",
+        method: "POST",
+        body: { ids, action },
       }),
-      providesTags: (result) =>
-        result ? [{ type: "Categories", id: result.id }] : [],
+      invalidatesTags: ["Categories"],
     }),
   }),
 });
 
-export const { useGetCategoriesQuery, useGetCategoryByIdQuery } = categoryApi;
+export const {
+  useGetCategoriesQuery,
+  useGetCategoryByIdQuery,
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
+  useBulkUpdateCategoriesMutation,
+} = categoryApi;

@@ -27,7 +27,7 @@ const SizeSection: React.FC<SizeSectionProps> = ({ updateSearchParams }) => {
   const { data: attributes, isLoading: isAttributesLoading } =
     useGetAttributesQuery();
 
-  const sizeAttribute = attributes?.find((attr) => attr.slug === "pa_size");
+  const sizeAttribute = attributes?.find((attr) => attr.slug === "size");
   const { data: sizeTerms, isLoading: isTermsLoading } =
     useGetAttributeTermsQuery(sizeAttribute?.id || 0, { skip: !sizeAttribute });
 

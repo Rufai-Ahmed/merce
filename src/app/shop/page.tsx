@@ -68,8 +68,8 @@ export default function ShopPage() {
     ...(category && { category }), // Category ID
     ...(minPrice && { min_price: minPrice }),
     ...(maxPrice && { max_price: maxPrice }),
-    ...(color && { attribute_term: "pa_color", attribute: color }),
-    ...(size && { attribute_term: "pa_size", attribute: size }),
+    ...(color && { attribute_term: "color", attribute: color }),
+    ...(size && { attribute_term: "size", attribute: size }),
     ...(style && { tag: style }),
     orderby: sortMap[sort].orderby,
     order: sortMap[sort].order,
@@ -81,7 +81,7 @@ export default function ShopPage() {
     data: categoryData,
     isLoading: isCategoryLoading,
     isError: isCategoryError,
-  } = useGetCategoryByIdQuery(Number(category), {
+  } = useGetCategoryByIdQuery(category, {
     skip: !category,
   });
 
@@ -124,7 +124,7 @@ export default function ShopPage() {
     return <div>Error loading products</div>;
   }
 
-  const totalPages = data.totalPages;
+  const totalPages = data.pagination.total_pages;
   const products = data.data;
   const pageTitle = categoryData?.name || "All Products";
 
@@ -156,7 +156,8 @@ export default function ShopPage() {
               <div className="flex flex-col sm:items-center sm:flex-row">
                 <span className="text-sm md:text-base text-black/60 mr-3">
                   Showing {(page - 1) * 10 + 1}-
-                  {Math.min(page * 10, data.total)} of {data.total} Products
+                  {Math.min(page * 10, data.pagination.total)} of{" "}
+                  {data.pagination.total} Products
                 </span>
                 <div className="flex items-center">
                   Sort by:{" "}
@@ -180,7 +181,7 @@ export default function ShopPage() {
             </div>
             <div className="w-full grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
               {products.map((product) => (
-                <ProductCard key={product.id} data={product} />
+                <ProductCard key={product._id} data={product} />
               ))}
             </div>
             <hr className="border-t-black/10" />

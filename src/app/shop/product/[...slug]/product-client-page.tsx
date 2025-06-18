@@ -13,7 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { notFound } from "next/navigation";
 
 type Props = {
-  productId: number;
+  productId: string;
 };
 
 export default function ProductPageClient({ productId }: Props) {
@@ -25,10 +25,10 @@ export default function ProductPageClient({ productId }: Props) {
   const { data: relatedProductsData, isLoading: isRelatedLoading } =
     useGetProductsQuery(
       {
-        include: product?.relatedIds?.join(",") || "",
+        include: product?.related_ids?.join(",") || "",
         per_page: 4,
       },
-      { skip: !product?.relatedIds?.length }
+      { skip: !product?.related_ids?.length }
     );
   const { data: reviewsData, isLoading: isReviewsLoading } =
     useGetProductReviewsQuery({ productId, per_page: 4 }, { skip: !product });
@@ -56,7 +56,7 @@ export default function ProductPageClient({ productId }: Props) {
     <main>
       <div className="max-w-frame mx-auto px-4 xl:px-0">
         <hr className="h-[1px] border-t-black/10 mb-5 sm:mb-6" />
-        <BreadcrumbProduct title={product?.title ?? "product"} />
+        <BreadcrumbProduct title={product?.name ?? "product"} />
         <section className="mb-11">
           <Header data={product} />
         </section>

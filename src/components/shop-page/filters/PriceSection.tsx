@@ -18,7 +18,7 @@ const PriceSection: React.FC<PriceSectionProps> = ({ updateSearchParams }) => {
   const searchParams = useSearchParams();
   const initPrice: [number, number] = [
     Number(searchParams.get("minPrice")) || 0,
-    Number(searchParams.get("maxPrice")) || 250,
+    Number(searchParams.get("maxPrice")) || 2500000000,
   ];
 
   return (

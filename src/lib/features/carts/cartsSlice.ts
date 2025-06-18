@@ -5,7 +5,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
 export type RemoveCartItem = {
-  id: number;
+  _id: string;
   attributes: string[];
 };
 
@@ -34,12 +34,7 @@ const initialState: CartsState = {
 
 const getAdjustedPrice = (item: CartItem): number => {
   const basePrice = item.price;
-  if (item.discount.percentage > 0) {
-    return Math.round(basePrice - (basePrice * item.discount.percentage) / 100);
-  }
-  if (item.discount.amount > 0) {
-    return Math.round(basePrice - item.discount.amount);
-  }
+
   return basePrice;
 };
 
@@ -63,7 +58,7 @@ export const cartsSlice = createSlice({
       } else {
         const existingItemIndex = state.cart.items.findIndex(
           (item) =>
-            item.id === newItem.id &&
+            item._id === newItem._id &&
             compareArrays(item.attributes, newItem.attributes)
         );
 
@@ -88,7 +83,7 @@ export const cartsSlice = createSlice({
 
       const itemToRemove = state.cart.items.find(
         (item) =>
-          item.id === action.payload.id &&
+          item._id === action.payload._id &&
           compareArrays(
             typeof item.attributes?.[0] === "object"
               ? item.attributes.map((a) => a.options)
@@ -116,7 +111,7 @@ export const cartsSlice = createSlice({
 
       const itemToRemove = state.cart.items.find(
         (item) =>
-          item.id === action.payload.id &&
+          item._id === action.payload._id &&
           compareArrays(
             typeof item.attributes?.[0] === "object"
               ? item.attributes.map((a) => a.options)
@@ -129,7 +124,7 @@ export const cartsSlice = createSlice({
         state.cart.items = state.cart.items.filter(
           (item) =>
             !(
-              item.id === action.payload.id &&
+              item._id === action.payload._id &&
               compareArrays(
                 typeof item.attributes?.[0] === "object"
                   ? item.attributes.map((a) => a.options)

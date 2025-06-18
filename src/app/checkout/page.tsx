@@ -9,7 +9,6 @@ import {
   useCreateOrderMutation,
   useGetShippingMethodsQuery,
 } from "@/apis/order.api";
-import FlutterwavePayment from "@/components/flutterwave";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,7 +30,7 @@ export default function CheckoutPage() {
   const { cart, totalPrice, adjustedTotalPrice } = useAppSelector(
     (state: RootState) => state.carts
   );
-  const { userId } = useAppSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
 
   const [createOrder, { isLoading: isOrderLoading }] = useCreateOrderMutation();
   const { data: shippingMethods, isLoading: isShippingLoading } =
@@ -77,17 +76,34 @@ export default function CheckoutPage() {
 
   const handleCheckout = async () => {
     const orderData = {
-      line_items: cart.items.map((item) => ({
-        product_id: item.id,
-        quantity: item.quantity,
-        ...(item.attributes.length > 0 && {
-          variation_id: item.variations[0]?.id,
-        }),
-        meta_data: item.attributes.map((attr) => ({
-          key: attr.name,
-          value: attr.options[0],
-        })),
-      })),
+      line_items: cart.items.map((item) => {
+        // Find the matching variation based on the item's attributes
+        const matchingVariation = item.variations?.find((variation) => {
+          const sizeAttr = variation.attributes["size"] || "";
+          const colorAttr = variation.attributes["color"] || "";
+
+          // Check if the item has the expected attributes
+          const itemSize = item.attributes.find((attr) => attr.name === "Size")
+            ?.options[0];
+          const itemColor = item.attributes.find(
+            (attr) => attr.name === "Color"
+          )?.options[0];
+
+          return (
+            sizeAttr.toLowerCase() === itemSize?.toLowerCase() &&
+            colorAttr.toLowerCase() === itemColor?.toLowerCase()
+          );
+        });
+
+        return {
+          product_id: item._id,
+          quantity: item.quantity,
+          // Include variation_id if a matching variation is found
+          ...(matchingVariation && {
+            variation_id: matchingVariation._id,
+          }),
+        };
+      }),
       billing: {
         first_name: formData.firstName,
         last_name: formData.lastName,
@@ -115,22 +131,23 @@ export default function CheckoutPage() {
             },
           ]
         : [],
-        customer_id: userId,
     };
 
     try {
       const order = await createOrder(orderData).unwrap();
-      return order.id;
+
+      // Redirect to the payment URL if available
+      if (order.payment_url) {
+        window.location.href = order.payment_url;
+      } else {
+        // Fallback to order confirmation page
+        dispatch(clearCart());
+        router.push(`/order-confirmation/${order.id}`);
+      }
     } catch (error) {
       console.error("Failed to create order:", error);
       alert("Error creating order. Please try again.");
-      throw error;
     }
-  };
-
-  const handlePaymentSuccess = (orderId: number) => {
-    dispatch(clearCart());
-    router.push(`/order-confirmation/${orderId}`);
   };
 
   return (
@@ -262,20 +279,18 @@ export default function CheckoutPage() {
                 <span>Total</span>
                 <span>₦{totalWithShipping.toLocaleString()}</span>
               </div>
-              <FlutterwavePayment
-                amount={totalWithShipping}
-                email={formData.email}
-                phone={formData.phone}
-                name={`${formData.firstName} ${formData.lastName}`}
-                onSuccess={handlePaymentSuccess}
-                onCreateOrder={handleCheckout}
+              <Button
+                className="w-full bg-black text-white rounded-full py-4"
+                onClick={handleCheckout}
                 disabled={
                   !formData.firstName ||
                   !formData.email ||
                   !formData.shippingMethod ||
                   isOrderLoading
                 }
-              />
+              >
+                {isOrderLoading ? "Processing..." : "Proceed to Payment"}
+              </Button>
             </div>
           </div>
         </div>

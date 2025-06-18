@@ -1,29 +1,156 @@
 import { baseApi } from "./base.api";
 
-export interface Order {
-  id: number;
-  status: string;
-  total: string;
-  date_created: Date | string;
+interface GetOrdersParams {
+  page?: number;
+  search?: string;
+  status?: string;
+  customer?: string;
 }
 
-export const ordersApi = baseApi.injectEndpoints({
+export interface OrderItem {
+  id: string;
+  product_id: string;
+  variation_id?: string;
+  quantity: number;
+  price: number;
+  total: string;
+  name: string;
+  sku: string;
+}
+
+export interface Order {
+  id: string;
+  parent_id: number;
+  status: string;
+  currency: string;
+  version: string;
+  prices_include_tax: boolean;
+  date_created: string;
+  date_modified: string;
+  discount_total: string;
+  discount_tax: string;
+  shipping_total: string;
+  shipping_tax: string;
+  cart_tax: string;
+  total: string;
+  total_tax: string;
+  customer_id: string;
+  order_key: string;
+  billing: {
+    first_name: string;
+    last_name: string;
+    company: string;
+    address_1: string;
+    address_2: string;
+    city: string;
+    state: string;
+    postcode: string;
+    country: string;
+    email: string;
+    phone: string;
+  };
+  shipping: {
+    first_name: string;
+    last_name: string;
+    company: string;
+    address_1: string;
+    address_2: string;
+    city: string;
+    state: string;
+    postcode: string;
+    country: string;
+  };
+  payment_method: string;
+  payment_method_title: string;
+  transaction_id?: string;
+  customer_ip_address: string;
+  customer_user_agent: string;
+  created_via: string;
+  customer_note?: string;
+  date_completed?: string;
+  date_paid?: string;
+  cart_hash: string;
+  number: string;
+  meta_data: any[];
+  line_items: OrderItem[];
+  tax_lines: any[];
+  shipping_lines: any[];
+  fee_lines: any[];
+  coupon_lines: any[];
+  refunds: any[];
+  payment_url: string;
+  is_editable: boolean;
+  needs_payment: boolean;
+  needs_processing: boolean;
+  date_created_gmt: string;
+  date_modified_gmt: string;
+  date_completed_gmt?: string;
+  date_paid_gmt?: string;
+  currency_symbol: string;
+}
+
+export const orderApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    getOrders: builder.query<Order[], GetOrdersParams>({
+      query: ({ page = 1, search = "", status = "", customer }) => ({
+        url: "orders",
+        params: {
+          page,
+          search,
+          status,
+          customer,
+          per_page: 10,
+        },
+      }),
+      providesTags: ["Orders"],
+    }),
+
+    getOrderById: builder.query<Order, string>({
+      query: (id) => `orders/${id}`,
+      providesTags: (result, error, id) => [{ type: "Orders", id }],
+    }),
+
     createOrder: builder.mutation<
-      any,
+      Order,
       {
         line_items: {
-          product_id: number;
+          product_id: string;
           quantity: number;
-          variation_id?: number;
+          variation_id?: string;
         }[];
-        billing: any;
-        shipping: any;
+        billing: {
+          first_name: string;
+          last_name: string;
+          email: string;
+          phone: string;
+          address_1: string;
+          city: string;
+          state: string;
+          country: string;
+          company?: string;
+          address_2?: string;
+          postcode?: string;
+        };
+        shipping?: {
+          first_name: string;
+          last_name: string;
+          address_1: string;
+          city: string;
+          state: string;
+          country: string;
+          company?: string;
+          address_2?: string;
+          postcode?: string;
+        };
         shipping_lines?: {
           method_id: string;
           method_title: string;
           total: string;
         }[];
+        coupon_lines?: any[];
+        payment_method?: string;
+        payment_method_title?: string;
+        customer_note?: string;
       }
     >({
       query: (orderData) => ({
@@ -37,40 +164,42 @@ export const ordersApi = baseApi.injectEndpoints({
           ...orderData,
         },
       }),
-      invalidatesTags: [{ type: "Orders", id: "LIST" }],
-    }),
-    getOrders: builder.query<Order[], number>({
-      query: (customerId) => `orders?customer=${customerId}`,
-      providesTags: ["Orders"],
+      invalidatesTags: ["Orders"],
     }),
 
-    getOrderById: builder.query<any, number>({
-      query: (orderId) => ({
-        url: `orders/${orderId}`,
+    updateOrder: builder.mutation<
+      Order,
+      {
+        id: string;
+        data: {
+          status?: string;
+          tracking_number?: string;
+          customer_note?: string;
+        };
+      }
+    >({
+      query: ({ id, data }) => ({
+        url: `orders/${id}`,
+        method: "PUT",
+        body: data,
       }),
-      providesTags: (result) =>
-        result ? [{ type: "Orders", id: result.id }] : [],
+      invalidatesTags: (result, error, { id }) => [
+        { type: "Orders", id },
+        "Orders",
+      ],
     }),
 
     getShippingMethods: builder.query<any[], void>({
-      query: () => ({
-        url: "shipping_methods",
-      }),
-      transformResponse: (response: any[]) =>
-        response.map((method) => ({
-          id: method.id,
-          title: method.title,
-          cost: method.settings?.cost?.value || "0",
-        })),
-      providesTags: [{ type: "ShippingMethods", id: "LIST" }],
+      query: () => "shipping_methods",
+      providesTags: ["ShippingMethods"],
     }),
   }),
-  overrideExisting: false,
 });
 
 export const {
-  useGetShippingMethodsQuery,
+  useGetOrdersQuery,
   useGetOrderByIdQuery,
   useCreateOrderMutation,
-  useGetOrdersQuery,
-} = ordersApi;
+  useUpdateOrderMutation,
+  useGetShippingMethodsQuery,
+} = orderApi;

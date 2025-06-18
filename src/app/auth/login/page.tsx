@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
 import { useLoginMutation } from "@/apis/auth.api";
-import { useAppDispatch } from "@/lib/hooks/redux";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { decodeToken } from "@/lib/utils";
 import { setAuth } from "@/lib/features/auth/auth.slice";
+import { useAppDispatch } from "@/lib/hooks/redux";
+import { motion } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -21,10 +20,9 @@ export default function LoginPage() {
     try {
       const response = await login({ username, password }).unwrap();
       const token = response.token;
-      const decoded = decodeToken(token);
-      const userId = decoded.data.user.id;
-      dispatch(setAuth({ token, userId }));
-      router.push("/profile");
+      dispatch(setAuth({ token, user: response.user }));
+      if (response.user.role === "super-admin") router.push("/admin");
+      else router.push("/profile");
     } catch (err) {
       console.error("Login failed:", err);
     }

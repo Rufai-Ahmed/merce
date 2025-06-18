@@ -24,21 +24,16 @@ const rootReducer = combineReducers({
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-export const makeStore = () => {
-  const store = configureStore({
-    reducer: persistedReducer,
-    devTools: process.env.NODE_ENV !== "production",
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        serializableCheck: false,
-      }).concat(baseApi.middleware, authApi.middleware),
-  });
+const store = configureStore({
+  reducer: persistedReducer,
+  devTools: process.env.NODE_ENV !== "production",
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }).concat(baseApi.middleware, authApi.middleware),
+});
 
-  const persistor = persistStore(store);
-  return { store, persistor };
-};
-
-const store = makeStore().store;
+const persistor = persistStore(store);
 
 // Infer the type of the store
 export type AppStore = typeof store;
@@ -46,4 +41,4 @@ export type AppStore = typeof store;
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-export { store };
+export { store, persistor };
