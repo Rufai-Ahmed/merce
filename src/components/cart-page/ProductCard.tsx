@@ -98,12 +98,7 @@ const ProductCard = ({ data }: ProductCardProps) => {
                 ₦{data.regular_price}
               </span>
             )}
-            {discount.percentage > 0 && (
-              <span className="font-bold text-black/40 line-through text-xl xl:text-2xl">
-                ₦{data.regular_price}
-              </span>
-            )}
-            {discount.amount > 0 && (
+            {(discount.percentage || discount.amount) > 0 && (
               <span className="font-bold text-black/40 line-through text-xl xl:text-2xl">
                 ₦{data.regular_price}
               </span>

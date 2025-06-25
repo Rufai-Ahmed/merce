@@ -18,14 +18,21 @@ const ProductCard = ({ data }: ProductCardProps) => {
       )?.src || data?.images[0]?.src
     : data?.images[0]?.src;
 
-  const discount = data.sale_price ? {
-    percentage: Math.round(((data.regular_price - data.sale_price) / data.regular_price) * 100),
-    amount: data.regular_price - data.sale_price
-  } : { percentage: 0, amount: 0 };
+  const discount = data.sale_price
+    ? {
+        percentage: Math.round(
+          ((data.regular_price - data.sale_price) / data.regular_price) * 100
+        ),
+        amount: data.regular_price - data.sale_price,
+      }
+    : { percentage: 0, amount: 0 };
 
   return (
     <Link
-      href={`/shop/product/${data._id}/${data.name.split(" ").join("-")?.toLowerCase()}`}
+      href={`/shop/product/${data._id}/${data.name
+        .split(" ")
+        .join("-")
+        ?.toLowerCase()}`}
       className="flex flex-col items-start aspect-auto"
     >
       <div className="bg-[#F0EEED] rounded-[13px] lg:rounded-[20px] w-full lg:max-w-[295px] aspect-square mb-2.5 xl:mb-4 overflow-hidden">
@@ -68,16 +75,12 @@ const ProductCard = ({ data }: ProductCardProps) => {
             ₦{data.regular_price}
           </span>
         )}
-        {discount.percentage > 0 && (
+        {(discount.percentage || discount.amount) > 0 && (
           <span className="font-bold text-black/40 line-through text-xl xl:text-2xl">
             ₦{data.regular_price}
           </span>
         )}
-        {discount.amount > 0 && (
-          <span className="font-bold text-black/40 line-through text-xl xl:text-2xl">
-            ₦{data.regular_price}
-          </span>
-        )}
+
         {discount.percentage > 0 ? (
           <span className="font-medium text-[10px] xl:text-xs py-1.5 px-3.5 rounded-full bg-[#FF3333]/10 text-[#FF3333]">
             {`-${discount.percentage}%`}
