@@ -80,6 +80,8 @@ export function ProductForm({
   const { data: brands } = useGetBrandsQuery({});
   const isLoading = isCreating || isUpdating;
 
+  console.debug({product})
+
   const form = useForm<Omit<Product, "images"> & { images: File[] }>({
     defaultValues: {
       name: product?.name || "",
@@ -100,10 +102,10 @@ export function ProductForm({
       brand: product?.brand || "",
       variation_options: {
         colors:
-          JSON.parse((product?.variation_options as string) || "{}")?.colors ||
+          JSON.parse((JSON.stringify(product?.variation_options)) || "{}")?.colors ||
           [],
         sizes:
-          JSON.parse((product?.variation_options as string) || "{}")?.sizes ||
+          JSON.parse((JSON.stringify(product?.variation_options)) || "{}")?.sizes ||
           [],
       },
     },
